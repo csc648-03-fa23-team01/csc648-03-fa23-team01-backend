@@ -2,11 +2,13 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, F
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 
+from alchemical import Alchemical
+
 import datetime
+db = Alchemical('mysql+mysqlconnector://root:Isagi11*@localhost:3306/sqlalchemy')
 
-Base = declarative_base()
 
-class Registered_User(Base):
+class Registered_User(db.Model):
     __tablename__ = 'Registered_Users'
 
     id = Column(Integer, primary_key=True)
@@ -21,7 +23,7 @@ class Registered_User(Base):
     tutor = relationship("Tutor", uselist=False, back_populates="user")
     messages = relationship("Message", back_populates="sender")
 
-class Tutor(Base):
+class Tutor(db.Model):
     __tablename__ = 'Tutors'
 
     user_id = Column(Integer, ForeignKey('Registered_Users.id'), primary_key=True)
@@ -37,7 +39,7 @@ class Tutor(Base):
 
     user = relationship("Registered_User", back_populates="tutor")
 
-class Message(Base):
+class Message(db.Model):
     __tablename__ = 'Messages'
 
     id = Column(Integer, primary_key=True)
