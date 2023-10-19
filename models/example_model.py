@@ -15,7 +15,7 @@ import datetime
 
 Base = declarative_base()
 
-class Registered_User(Base):
+class Registered_User(db.Model):
     __tablename__ = 'Registered_Users'
 
     id = Column(Integer, primary_key=True)
@@ -32,7 +32,7 @@ class Registered_User(Base):
     messages = relationship("Message", back_populates="sender")
 
 
-class Tutor(Base):
+class Tutor(db.Model):
     __tablename__ = 'Tutors'
 
     user_id = Column(Integer, ForeignKey('Registered_Users.id'), primary_key=True)
@@ -50,7 +50,7 @@ class Tutor(Base):
     user = relationship("Registered_User", back_populates="tutor")
 
 
-class Message(Base):
+class Message(db.Model):
     __tablename__ = 'Messages'
 
     id = Column(Integer, primary_key=True)

@@ -54,5 +54,6 @@ if __name__ == '__main__':
     engine = create_engine(DATABASE_URI, echo=True)  # echo=True will show generated SQL statements
     Base.metadata.create_all(engine)
     
+    # Inserting data into Registered_Users
 
     
