@@ -62,7 +62,7 @@ class Message(db.Model):
     # Relationships
     sender = relationship("Registered_User", back_populates="messages")
 
-# Create the tables
-if __name__ == '__main__':
-    engine = create_engine('sqlite:///tutor_platform.db')  # Example with SQLite, change the URI accordingly
-    Base.metadata.create_all(engine)
+# use to create local tables
+# if __name__ == '__main__':
+#     engine = create_engine('sqlite:///tutor_platform.db')  # Example with SQLite, change the URI accordingly
+#     Base.metadata.create_all(engine)

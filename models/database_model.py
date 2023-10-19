@@ -50,12 +50,10 @@ class Message(db.Model):
     sender = relationship("Registered_User", back_populates="messages")
 
 
-
-if __name__ == '__main__':
-    DATABASE_URI = 'mysql+mysqldb://root:W0lfezen@localhost:3306/test?charset=utf8'
-    engine = create_engine(DATABASE_URI, echo=True)  # echo=True will show generated SQL statements
-    Base.metadata.create_all(engine)
+#Uncomment to create local tables
+# if __name__ == '__main__':
+#     DATABASE_URI = 'mysql+mysqldb://root:password@localhost:3306/tablename'
+#     engine = create_engine(DATABASE_URI, echo=True)  # echo=True will show generated SQL statements
+#     Base.metadata.create_all(engine)
     
-    # Inserting data into Registered_Users
-
     

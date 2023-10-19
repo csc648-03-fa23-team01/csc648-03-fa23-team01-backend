@@ -6,17 +6,20 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import select
 app = FastAPI()
-db = Alchemical('mysql+mysqldb://root:W0lfezen@localhost:3306/test?charset=utf8')
+db = Alchemical('mysql+mysqlconnector://root:Isagi11*@localhost:3306/sqlalchemy')
 
 @app.get("/")
 async def root():
-    
 
     return {"message": "Hello World"}
-if __name__ == '__main__':
 
-    with db.Session() as session:
-        tutors = Tutor(user_id=1)
-        query = select(Tutor)
-        for todo in session.scalars(query):
-            print(todo)
+#sample query
+#select tutors with user_id = 1
+
+# if __name__ == '__main__':
+
+#     with db.Session() as session:
+#         tutors = Tutor(user_id=1)
+#         query = select(Tutor)
+#         for todo in session.scalars(query):
+#             print(todo.__dict__)

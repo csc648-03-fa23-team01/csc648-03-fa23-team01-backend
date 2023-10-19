@@ -1,12 +1,14 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
+from models.database_model import Registered_User, Tutor, Message
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 import datetime
 
+#use to populate local tables
 Base = declarative_base()
 
 if __name__ == '__main__':
-    DATABASE_URI = 'mysql+mysqldb://root:password@localhost:3306/test?charset=utf8'
+    DATABASE_URI = 'mysql+mysqldb://root:password@localhost:3306/DB_NAME'
     engine = create_engine(DATABASE_URI, echo=True)  # echo=True will show generated SQL statements
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
