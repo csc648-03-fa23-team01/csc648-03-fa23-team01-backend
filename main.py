@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from alchemical import Alchemical
-from models.database_model import Registered_User, Tutor, Message
+from models.database_model import db, Registered_User, Tutor, Topic, TutorTopic, Message
 from models.sampleInsert import populate_db
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
 from sqlalchemy.orm import declarative_base
@@ -21,8 +21,14 @@ async def root():
 
 @app.get("/test")
 async def test():
-    print(env_values.get("DATABASE_URL"))
-    # populate_db()
+    populate_db()
+    return{"message":"yer"}
+
+@app.get("/genTables")
+async def gen():
+    engine = db.engine
+    db.Base.metadata.create_all(engine)
+    engine = db.engine
     return{"message":"yer"}
 #sample query
 #select tutors with user_id = 1
