@@ -5,8 +5,12 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, F
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import select
+from dotenv import dotenv_values
+
+env_values = dotenv_values(".env")
+
 app = FastAPI()
-db = Alchemical('mysql+mysqlconnector://root:Isagi11*@localhost:3306/sqlalchemy')
+db = Alchemical(env_values.get("DATABASE_URL"))
 
 @app.get("/")
 async def root():

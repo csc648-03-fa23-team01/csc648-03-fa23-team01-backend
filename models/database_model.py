@@ -1,14 +1,17 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
+from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text, Table
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
+from dotenv import dotenv_values
+
 
 from alchemical import Alchemical
 
+env_values = dotenv_values(".env")
 import datetime
 import pymysql
 
 pymysql.install_as_MySQLdb()
-db = Alchemical('mysql+mysqlconnector://root:Isagi11*@localhost:3306/sqlalchemy')
+db = Alchemical(env_values.get("DATABASE_URL"))
 
 
 class Registered_User(db.Model):
@@ -41,6 +44,26 @@ class Tutor(db.Model):
     other_languages = Column(String(255))
 
     user = relationship("Registered_User", back_populates="tutor")
+    topics = relationship('TutorTopic', back_populates='tutor')
+
+class Topic(db.Model):
+    __tablename__ = 'Topics'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    
+    # Relationship to the TutorTopic association model
+    tutors = db.relationship('TutorTopic', back_populates='topic')
+
+class TutorTopic(db.Model):
+    __tablename__ = 'tutor_topic_association'
+
+    tutor_id = db.Column(db.Integer, db.ForeignKey('Tutors.user_id'), primary_key=True)
+    topic_id = db.Column(db.Integer, db.ForeignKey('Topics.id'), primary_key=True)
+
+    tutor = db.relationship('Tutor', back_populates='topics')
+    topic = db.relationship('Topic', back_populates='tutors')
+
 
 class Message(db.Model):
     __tablename__ = 'Messages'
@@ -58,5 +81,3 @@ class Message(db.Model):
 #     DATABASE_URI = 'mysql+mysqldb://root:password@localhost:3306/tablename'
 #     engine = create_engine(DATABASE_URI, echo=True)  # echo=True will show generated SQL statements
 #     Base.metadata.create_all(engine)
-    
-    
