@@ -5,6 +5,9 @@ from sqlalchemy.orm import relationship, sessionmaker
 from alchemical import Alchemical
 
 import datetime
+import pymysql
+
+pymysql.install_as_MySQLdb()
 db = Alchemical('mysql+mysqlconnector://root:Isagi11*@localhost:3306/sqlalchemy')
 
 
