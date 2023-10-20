@@ -5,9 +5,9 @@ from sqlalchemy.orm import relationship, sessionmaker
 from alchemical import Alchemical
 
 import datetime
-db = Alchemical('mysql+mysqlconnector://root:Isagi11*@localhost:3306/sqlalchemy')
+db = Alchemical('mysql+mysqlconnector://root:1234@localhost:3306/sqlalchemy')
 
-
+Base = declarative_base()
 class Registered_User(db.Model):
     __tablename__ = 'Registered_Users'
 
@@ -52,10 +52,16 @@ class Message(db.Model):
 
 
 if __name__ == '__main__':
-    DATABASE_URI = 'mysql+mysqldb://root:W0lfezen@localhost:3306/test?charset=utf8'
+    DATABASE_URI = 'mysql+mysqldb://root:1234@localhost:3306/tutorial_db?charset=utf8'
     engine = create_engine(DATABASE_URI, echo=True)  # echo=True will show generated SQL statements
     Base.metadata.create_all(engine)
-    
     # Inserting data into Registered_Users
+
+# Inserting data into Tutors    
+DATABASE_URI = 'mysql+mysqldb://root:1234@localhost:3306/tutorial_db?charset=utf8'
+engine = create_engine(DATABASE_URI, echo=True)  # echo=True will show generated SQL statements
+Base.metadata.create_all(engine)    
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
     

@@ -1,15 +1,10 @@
 from fastapi import FastAPI, Depends
 from alchemical import Alchemical
-from models.database_model import Registered_User, Tutor, Message, SessionLocal
-from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker, Session
-from sqlalchemy import select
-from pydantic import BaseModel
+from models.database_model import Tutor
+from sqlalchemy.orm import Session, sessionmaker
+from models.database_model import SessionLocal
 app = FastAPI()
 db = Alchemical('mysql+mysqldb://root:1234@localhost:3306/tutorial_db?charset=utf8')
-
-print("hello world")
 class SearchInput(BaseModel):
     text: str
 # Dependency
@@ -26,5 +21,9 @@ def searchTutorsTopics(text: str, db: Session):
 
 @app.post("/search")
 async def searchTutors(input: SearchInput, db: Session = Depends(get_db)):
-    tutors = searchTutorsTopics(input.text, db)
-    return tutors
+    with db as session:
+        tutors = searchTutorsTopics(input.text, session)
+        return tutors
+
+
+
