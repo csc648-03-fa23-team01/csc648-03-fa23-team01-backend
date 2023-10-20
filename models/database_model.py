@@ -3,11 +3,6 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from dotenv import dotenv_values
 import os
-
-
-from alchemical import Alchemical
-
-env_values = dotenv_values(".env")
 import datetime
 # import pymysql
 
@@ -69,7 +64,7 @@ class Message(Base):
     __tablename__ = 'Messages'
 
     id = Column(Integer, primary_key=True)
-    who_sent = Column(Integer, ForeignKey('Registered_Users.id'))
+    receiver = Column(Integer, ForeignKey('Registered_Users.id'))
     message_text = Column(Text, nullable=False)
     when_sent = Column(DateTime, default=datetime.datetime.utcnow)
     message_id = Column(Integer, unique=True)

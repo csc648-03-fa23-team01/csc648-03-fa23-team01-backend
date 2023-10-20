@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from alchemical import Alchemical
-from models.database_model import Base, engine, Registered_User, Tutor, Topic, TutorTopic, Message
+from models.database_model import Base, engine
 from models.sampleInsert import populate_db
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
 from sqlalchemy.orm import declarative_base
@@ -15,7 +15,6 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-
     return {"message": "Hello World"}
 
 @app.get("/test")
