@@ -64,7 +64,7 @@ class Message(Base):
     __tablename__ = 'Messages'
 
     id = Column(Integer, primary_key=True)
-    who_sent = Column(Integer, ForeignKey('Registered_Users.id'))
+    receiver = Column(Integer, ForeignKey('Registered_Users.id'))
     message_text = Column(Text, nullable=False)
     when_sent = Column(DateTime, default=datetime.datetime.utcnow)
     message_id = Column(Integer, unique=True)
