@@ -2,16 +2,17 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, F
 from database_model import Registered_User, Tutor, Message
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from dotenv import dotenv_values
+from dotenv import load_dotenv
+import os 
 
+load_dotenv()
 import datetime
 
-env_values = dotenv_values(".env")
 #use to populate local tables
 Base = declarative_base()
 
 if __name__ == '__main__':
-    DATABASE_URI = env_values.get("DATABASE_URL")
+    DATABASE_URI = os.environ["DATABASE_URL"]
     engine = create_engine(DATABASE_URI, echo=True)  # echo=True will show generated SQL statements
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
