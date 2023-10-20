@@ -1,43 +1,77 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
-from database_model import Registered_User, Tutor, Message
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, sessionmaker
+from dotenv import dotenv_values
+from models.database_model import db, Registered_User, Tutor, Topic, TutorTopic, Message
 from dotenv import load_dotenv
-import os 
+import os
 
-load_dotenv()
-import datetime
-
-#use to populate local tables
-Base = declarative_base()
-
-if __name__ == '__main__':
-    DATABASE_URI = os.environ["DATABASE_URL"]
-    engine = create_engine(DATABASE_URI, echo=True)  # echo=True will show generated SQL statements
-    Base.metadata.create_all(engine)
+def populate_db():
+    DATABASE_URL = os.environ["DATABASE_URL"]
+    engine = create_engine(DATABASE_URL, echo=True)
     Session = sessionmaker(bind=engine)
     session = Session()
-    john = Registered_User(first_name='John', last_name='Doe', email='john.doe@example.com', password='hashed_password_1', admin_status=False, profile_picture_link='http://example.com/profile1.jpg', verified_status=True)
-    jane = Registered_User(first_name='Jane', last_name='Smith', email='jane.smith@example.com', password='hashed_password_2', admin_status=True)
-    alice = Registered_User(first_name='Alice', last_name='Johnson', email='alice.johnson@example.com', password='hashed_password_3', admin_status=False, profile_picture_link='http://example.com/profile3.jpg', verified_status=True)
 
-    session.add_all([john, jane, alice])
-    session.commit()
+    # Create some sample data
+    # Adding Registered Users
+    user1 = Registered_User(
+        first_name='John',
+        last_name='Doe',
+        email='john.doe@example.com',
+        password='password123'
+    )
+    user2 = Registered_User(
+        first_name='Jane',
+        last_name='Doe',
+        email='jane.doe@example.com',
+        password='password123'
+    )
+    session.add(user1)
+    session.add(user2)
 
-    # Inserting data into Tutors
-    john_tutor = Tutor(user_id=john.id, average_ratings=4.5, classes='Math, Physics', description='Experienced tutor with 5 years of teaching.', price=30.00, times_available='Weekdays 4pm-6pm', main_languages='English', prefer_in_person=True, cv_link='http://example.com/cv1.pdf', other_languages='French, Spanish')
-    alice_tutor = Tutor(user_id=alice.id, average_ratings=4.0, classes='English, Literature', description='Passionate about languages and literature.', price=25.00, times_available='Weekends 10am-1pm', main_languages='English', other_languages='German')
+    # Adding Tutors
+    tutor1 = Tutor(
+        user=user1,
+        description='Experienced Math Tutor',
+        price=30.0
+    )
+    tutor2 = Tutor(
+        user=user2,
+        description='Physics Expert',
+        price=35.0
+    )
+    session.add(tutor1)
+    session.add(tutor2)
 
-    session.add_all([john_tutor, alice_tutor])
-    session.commit()
+    # Adding Topics
+    topic1 = Topic(name='Math')
+    topic2 = Topic(name='Physics')
+    session.add(topic1)
+    session.add(topic2)
 
-    # Inserting data into Messages
-    message_1 = Message(who_sent=john.id, message_text='Hello, I would like to book a session.', when_sent=datetime.datetime.now(), message_id=1001)
-    message_2 = Message(who_sent=alice.id, message_text='Sure, let\'s schedule a time.', when_sent=datetime.datetime.now(), message_id=1002)
+    # Adding Tutor-Topic Associations
+    tutor_topic1 = TutorTopic(tutor=tutor1, topic=topic1)
+    tutor_topic2 = TutorTopic(tutor=tutor2, topic=topic2)
+    session.add(tutor_topic1)
+    session.add(tutor_topic2)
 
-    session.add_all([message_1, message_2])
+    # Adding Messages
+    message1 = Message(
+        who_sent=user1.id,
+        message_text='Hello, can we schedule a session for next Monday?',
+        sender=user1
+    )
+    message2 = Message(
+        who_sent=user2.id,
+        message_text='Sure, see you then!',
+        sender=user2
+    )
+    session.add(message1)
+    session.add(message2)
+
+    # Commit and close
     session.commit()
     session.close()
 
-
-# Closing the session
+if __name__ == '__main__':
+    populate_db()

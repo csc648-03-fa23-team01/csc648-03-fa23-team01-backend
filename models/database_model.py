@@ -8,11 +8,11 @@ from alchemical import Alchemical
 
 env_values = dotenv_values(".env")
 import datetime
-import pymysql
+# import pymysql
 
-pymysql.install_as_MySQLdb()
+# pymysql.install_as_MySQLdb()
 db = Alchemical(env_values.get("DATABASE_URL"))
-
+Base = declarative_base()
 
 class Registered_User(db.Model):
     __tablename__ = 'Registered_Users'
@@ -76,8 +76,8 @@ class Message(db.Model):
     sender = relationship("Registered_User", back_populates="messages")
 
 
-#Uncomment to create local tables
+# # Uncomment to create local tables
 # if __name__ == '__main__':
-#     DATABASE_URI = 'mysql+mysqldb://root:password@localhost:3306/tablename'
-#     engine = create_engine(DATABASE_URI, echo=True)  # echo=True will show generated SQL statements
+#     # print(env_values.get("DATABASE_URL"))
+#     engine = create_engine(env_values.get("DATABASE_URL"), echo=True)  # echo=True will show generated SQL statements
 #     Base.metadata.create_all(engine)
