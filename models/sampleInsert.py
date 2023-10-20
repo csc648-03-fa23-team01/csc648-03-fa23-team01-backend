@@ -1,8 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
-from dotenv import dotenv_values
-from models.database_model import db, Registered_User, Tutor, Topic, TutorTopic, Message
+from models.database_model import Registered_User, Tutor, Topic, TutorTopic, Message
 from dotenv import load_dotenv
 import os
 
