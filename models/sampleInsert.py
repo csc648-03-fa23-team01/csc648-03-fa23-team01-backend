@@ -1,8 +1,6 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from models.database_model import Registered_User, Tutor, Topic, TutorTopic, Message
-from dotenv import load_dotenv
 import os
 
 def populate_db():
@@ -71,6 +69,3 @@ def populate_db():
     # Commit and close
     session.commit()
     session.close()
-
-if __name__ == '__main__':
-    populate_db()

@@ -1,15 +1,10 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text, Table
 from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
-from dotenv import dotenv_values
+from sqlalchemy.orm import relationship
 import os
-
-
 from alchemical import Alchemical
 
-env_values = dotenv_values(".env")
 import datetime
-# import pymysql
 
 engine = create_engine(os.environ["DATABASE_URL"], echo=True)
 Base = declarative_base()
@@ -75,9 +70,3 @@ class Message(Base):
     message_id = Column(Integer, unique=True)
     sender = relationship("Registered_User", back_populates="messages")
 
-
-# # Uncomment to create local tables
-# if __name__ == '__main__':
-#     # print(env_values.get("DATABASE_URL"))
-#     engine = create_engine(env_values.get("DATABASE_URL"), echo=True)  # echo=True will show generated SQL statements
-#     Base.metadata.create_all(engine)
