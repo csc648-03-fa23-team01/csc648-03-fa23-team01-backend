@@ -1,11 +1,14 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
+from dotenv import dotenv_values
+
 
 from alchemical import Alchemical
 
+env_values = dotenv_values(".env")
 import datetime
-db = Alchemical('mysql+mysqlconnector://root:Isagi11*@localhost:3306/sqlalchemy')
+db = Alchemical(env_values.get("DATABASE_URL"))
 
 
 class Registered_User(db.Model):
@@ -55,5 +58,3 @@ class Message(db.Model):
 #     DATABASE_URI = 'mysql+mysqldb://root:password@localhost:3306/tablename'
 #     engine = create_engine(DATABASE_URI, echo=True)  # echo=True will show generated SQL statements
 #     Base.metadata.create_all(engine)
-    
-    
