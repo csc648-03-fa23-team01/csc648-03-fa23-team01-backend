@@ -49,20 +49,20 @@ class Tutor(db.Model):
 class Topic(db.Model):
     __tablename__ = 'Topics'
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
     
     # Relationship to the TutorTopic association model
-    tutors = db.relationship('TutorTopic', back_populates='topic')
+    tutors = relationship('TutorTopic', back_populates='topic')
 
 class TutorTopic(db.Model):
     __tablename__ = 'tutor_topic_association'
 
-    tutor_id = db.Column(db.Integer, db.ForeignKey('Tutors.user_id'), primary_key=True)
-    topic_id = db.Column(db.Integer, db.ForeignKey('Topics.id'), primary_key=True)
+    tutor_id = Column(Integer, ForeignKey('Tutors.user_id'), primary_key=True)
+    topic_id = Column(Integer, ForeignKey('Topics.id'), primary_key=True)
 
-    tutor = db.relationship('Tutor', back_populates='topics')
-    topic = db.relationship('Topic', back_populates='tutors')
+    tutor = relationship('Tutor', back_populates='topics')
+    topic = relationship('Topic', back_populates='tutors')
 
 
 class Message(db.Model):
