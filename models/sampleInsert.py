@@ -1,6 +1,8 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, sessionmaker
 from models.database_model import Registered_User, Tutor, Topic, TutorTopic, Message
+from dotenv import load_dotenv
 import os
 
 def populate_db():
@@ -15,19 +17,24 @@ def populate_db():
         first_name='John',
         last_name='Doe',
         email='john.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/jake.jpg'
     )
     user2 = Registered_User(
         first_name='Jane',
         last_name='Doe',
         email='jane.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/jessica.jpg'
+
     )
     user3 = Registered_User(
         first_name='joe',
         last_name='jo',
         email='joe.jo@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
+
     )
     user4 = Registered_User(
         first_name='bill',
@@ -85,32 +92,76 @@ def populate_db():
     tutor1 = Tutor(
         user=user1,
         description='Experienced Math Tutor',
-        price=30.0
+        price=30.0,
+        average_ratings=4.5,
+        classes='Algebra, Geometry, Calculus',
+        times_available='Mon-Fri: 9am-5pm',
+        main_languages='English',
+        prefer_in_person=True,
+        cv_link='https://example.com/cv/tutor1.pdf',
+        other_languages='Spanish, French'
     )
+
     tutor2 = Tutor(
         user=user2,
         description='Physics Expert',
-        price=35.0
+        price=35.0,
+        average_ratings=4.7,
+        classes='Physics I, Physics II',
+        times_available='Mon-Wed, Fri: 10am-4pm',
+        main_languages='English',
+        prefer_in_person=False,
+        cv_link='https://example.com/cv/tutor2.pdf',
+        other_languages='German'
     )
     tutor3 = Tutor(
         user=user3,
-        description='Experienced Math Tutor',
-        price=30.0
+        description='Chemistry Guru',
+        price=40.0,
+        average_ratings=4.8,
+        classes='Organic Chemistry, Inorganic Chemistry',
+        times_available='Tue-Thu: 10am-6pm',
+        main_languages='English',
+        prefer_in_person=True,
+        cv_link='https://example.com/cv/tutor3.pdf',
+        other_languages='Italian, Spanish'
     )
+    
     tutor4 = Tutor(
         user=user4,
-        description='Physics Expert',
-        price=35.0
+        description='Biology Expert',
+        price=28.0,
+        average_ratings=4.6,
+        classes='Cell Biology, Genetics',
+        times_available='Mon, Wed, Fri: 8am-12pm',
+        main_languages='English',
+        prefer_in_person=False,
+        cv_link='https://example.com/cv/tutor4.pdf',
+        other_languages='French'
     )
     tutor5 = Tutor(
         user=user5,
-        description='Experienced Math Tutor',
-        price=30.0
+        description='Statistics Whiz',
+        price=32.0,
+        average_ratings=4.7,
+        classes='Intro to Statistics, Advanced Statistics',
+        times_available='Mon-Fri: 1pm-4pm',
+        main_languages='English',
+        prefer_in_person=False,
+        cv_link='https://example.com/cv/tutor5.pdf',
+        other_languages='Spanish, German'
     )
     tutor6 = Tutor(
         user=user6,
-        description='Physics Expert',
-        price=35.0
+        description='English Literature Enthusiast',
+        price=25.0,
+        average_ratings=4.3,
+        classes='British Literature, American Literature',
+        times_available='Tue, Thu: 10am-3pm',
+        main_languages='English',
+        prefer_in_person=True,
+        cv_link='https://example.com/cv/tutor6.pdf',
+        other_languages='French, Spanish'
     )
     tutor7 = Tutor(
         user=user7,
@@ -236,3 +287,6 @@ def populate_db():
     # Commit and close
     session.commit()
     session.close()
+
+if __name__ == '__main__':
+    populate_db()
