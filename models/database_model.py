@@ -3,6 +3,7 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 import os
 from alchemical import Alchemical
+from sqlalchemy import UniqueConstraint
 
 import datetime
 
@@ -10,6 +11,13 @@ db = Alchemical(os.environ["DATABASE_URL"])
 engine = create_engine(os.environ["DATABASE_URL"], echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+tutor_topic_association = Table(
+    'tutor_topic',
+    Base.metadata,
+    Column('tutor_id', Integer, ForeignKey('Tutors.user_id'), primary_key=True),
+    Column('topic_id', Integer, ForeignKey('Topics.id'), primary_key=True)
+)
 
 class Registered_User(Base):
     __tablename__ = 'Registered_Users'
@@ -41,7 +49,8 @@ class Tutor(Base):
     other_languages = Column(String(255))
 
     user = relationship("Registered_User", back_populates="tutor")
-    topics = relationship('TutorTopic', back_populates='tutor')
+    topics = relationship('Topic', secondary=tutor_topic_association, back_populates='tutors')
+
 
 class Topic(Base):
     __tablename__ = 'Topics'
@@ -50,16 +59,7 @@ class Topic(Base):
     name = Column(String(255), nullable=False)
     
     # Relationship to the TutorTopic association model
-    tutors = relationship('TutorTopic', back_populates='topic')
-
-class TutorTopic(Base):
-    __tablename__ = 'tutor_topic_association'
-
-    tutor_id = Column(Integer, ForeignKey('Tutors.user_id'), primary_key=True)
-    topic_id = Column(Integer, ForeignKey('Topics.id'), primary_key=True)
-
-    tutor = relationship('Tutor', back_populates='topics')
-    topic = relationship('Topic', back_populates='tutors')
+    tutors = relationship('Tutor', secondary=tutor_topic_association, back_populates='topics')
 
 
 class Message(Base):

@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
-from models.database_model import Registered_User, Tutor, Topic, TutorTopic, Message
+from models.database_model import Registered_User, Tutor, Topic, Message
 from dotenv import load_dotenv
 import os
 
@@ -33,50 +33,58 @@ def populate_db():
         last_name='jo',
         email='joe.jo@example.com',
         password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
 
     )
     user4 = Registered_User(
         first_name='bill',
         last_name='Doe',
         email='billy.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
+
     )
     user5 = Registered_User(
         first_name='nasd',
         last_name='Doe',
         email='asd.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg'
     )
     user6 = Registered_User(
         first_name='John',
         last_name='asd',
         email='johfsdfdsn.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Mahdi.jpg'
     )
     user7 = Registered_User(
         first_name='asff',
         last_name='Doe',
         email='sdgg.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
     )
     user8 = Registered_User(
         first_name='jhjk',
         last_name='Doe',
         email='jhjk.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
     )
     user9 = Registered_User(
         first_name='asdasdfsd',
         last_name='Doe',
         email='asdasdfsd.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg'
     )
     user10 = Registered_User(
         first_name='jkhygui',
         last_name='Doe',
         email='jkhygui.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
     )
     session.add(user1)
     session.add(user2)
@@ -88,6 +96,25 @@ def populate_db():
     session.add(user8)
     session.add(user9)
     session.add(user10)
+
+     # Adding Topics
+    topic1 = Topic(name='Math')
+    topic2 = Topic(name='Physics')
+    topic3 = Topic(name='Science')
+    topic4 = Topic(name='Reading')
+    topic5 = Topic(name='English')
+    topic6 = Topic(name='Spanish')
+    topic7 = Topic(name='umm')
+    topic8 = Topic(name='yes')
+    session.commit()
+    session.add(topic1)
+    session.add(topic2)
+    session.add(topic3)
+    session.add(topic4)
+    session.add(topic5)
+    session.add(topic6)
+    session.add(topic7)
+    session.add(topic8)
     # Adding Tutors
     tutor1 = Tutor(
         user=user1,
@@ -99,7 +126,8 @@ def populate_db():
         main_languages='English',
         prefer_in_person=True,
         cv_link='https://example.com/cv/tutor1.pdf',
-        other_languages='Spanish, French'
+        other_languages='Spanish, French',
+        topics = [topic1, topic2]
     )
 
     tutor2 = Tutor(
@@ -112,7 +140,8 @@ def populate_db():
         main_languages='English',
         prefer_in_person=False,
         cv_link='https://example.com/cv/tutor2.pdf',
-        other_languages='German'
+        other_languages='German',
+        topics = [topic2, topic3]
     )
     tutor3 = Tutor(
         user=user3,
@@ -124,7 +153,8 @@ def populate_db():
         main_languages='English',
         prefer_in_person=True,
         cv_link='https://example.com/cv/tutor3.pdf',
-        other_languages='Italian, Spanish'
+        other_languages='Italian, Spanish',
+        topics = [topic3, topic4]
     )
     
     tutor4 = Tutor(
@@ -137,7 +167,8 @@ def populate_db():
         main_languages='English',
         prefer_in_person=False,
         cv_link='https://example.com/cv/tutor4.pdf',
-        other_languages='French'
+        other_languages='French',
+        topics = [topic1, topic3]
     )
     tutor5 = Tutor(
         user=user5,
@@ -149,7 +180,8 @@ def populate_db():
         main_languages='English',
         prefer_in_person=False,
         cv_link='https://example.com/cv/tutor5.pdf',
-        other_languages='Spanish, German'
+        other_languages='Spanish, German',
+        topics = [topic3, topic4,topic5]
     )
     tutor6 = Tutor(
         user=user6,
@@ -161,27 +193,60 @@ def populate_db():
         main_languages='English',
         prefer_in_person=True,
         cv_link='https://example.com/cv/tutor6.pdf',
-        other_languages='French, Spanish'
+        other_languages='French, Spanish',
+        topics = [topic5, topic6]
     )
     tutor7 = Tutor(
         user=user7,
-        description='Experienced Math Tutor',
-        price=30.0
+        description='English Literature Enthusiast',
+        price=25.0,
+        average_ratings=4.3,
+        classes='British Literature, American Literature',
+        times_available='Tue, Thu: 10am-3pm',
+        main_languages='English',
+        prefer_in_person=True,
+        cv_link='https://example.com/cv/tutor6.pdf',
+        other_languages='French, Spanish',
+        topics = [topic2, topic7]
     )
     tutor8 = Tutor(
         user=user8,
-        description='Physics Expert',
-        price=35.0
+         description='Biology Expert',
+        price=28.0,
+        average_ratings=4.6,
+        classes='Cell Biology, Genetics',
+        times_available='Mon, Wed, Fri: 8am-12pm',
+        main_languages='English',
+        prefer_in_person=False,
+        cv_link='https://example.com/cv/tutor4.pdf',
+        other_languages='French',
+        topics = [topic1, topic3,topic5,topic6,topic7]
     )
     tutor9 = Tutor(
         user=user9,
-        description='Experienced Math Tutor',
-        price=30.0
+        description='Chemistry Guru',
+        price=40.0,
+        average_ratings=4.8,
+        classes='Organic Chemistry, Inorganic Chemistry',
+        times_available='Tue-Thu: 10am-6pm',
+        main_languages='English',
+        prefer_in_person=True,
+        cv_link='https://example.com/cv/tutor3.pdf',
+        other_languages='Italian, Spanish',
+        topics=[topic6, topic2, topic7, topic4, topic5]
     )
     tutor10 = Tutor(
         user=user10,
-        description='Physics Expert',
-        price=35.0
+          description='Experienced Math Tutor',
+        price=30.0,
+        average_ratings=4.5,
+        classes='Algebra, Geometry, Calculus',
+        times_available='Mon-Fri: 9am-5pm',
+        main_languages='English',
+        prefer_in_person=True,
+        cv_link='https://example.com/cv/tutor1.pdf',
+        other_languages='Spanish, French',
+        topics = [topic7]
     )
     session.add(tutor1)
     session.add(tutor2)
@@ -193,46 +258,6 @@ def populate_db():
     session.add(tutor8)
     session.add(tutor9)
     session.add(tutor10)
-
-
-    # Adding Topics
-    topic1 = Topic(name='Math')
-    topic2 = Topic(name='Physics')
-    topic3 = Topic(name='Science')
-    topic4 = Topic(name='Reading')
-    topic5 = Topic(name='English')
-    topic6 = Topic(name='Spanish')
-    topic7 = Topic(name='umm')
-    topic8 = Topic(name='yes')
-
-    session.add(topic1)
-    session.add(topic2)
-    session.add(topic3)
-    session.add(topic4)
-    session.add(topic5)
-    session.add(topic6)
-    session.add(topic7)
-    session.add(topic8)
-
-    # Adding Tutor-Topic Associations
-    tutor_topic1 = TutorTopic(tutor=tutor1, topic=topic1)
-    tutor_topic2 = TutorTopic(tutor=tutor2, topic=topic2)
-    tutor_topic3 = TutorTopic(tutor=tutor3, topic=topic3)
-    tutor_topic4 = TutorTopic(tutor=tutor4, topic=topic4)
-    tutor_topic5 = TutorTopic(tutor=tutor5, topic=topic5)
-    tutor_topic6 = TutorTopic(tutor=tutor6, topic=topic6)
-    tutor_topic7 = TutorTopic(tutor=tutor7, topic=topic7)
-    tutor_topic8 = TutorTopic(tutor=tutor8, topic=topic8)
-    session.add(tutor_topic1)
-    session.add(tutor_topic2)
-    session.add(tutor_topic3)
-    session.add(tutor_topic4)
-    session.add(tutor_topic5)
-    session.add(tutor_topic6)
-    session.add(tutor_topic7)
-    session.add(tutor_topic8)
-
-
 
     # Adding Messages
     message1 = Message(
