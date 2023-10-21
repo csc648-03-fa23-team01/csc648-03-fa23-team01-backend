@@ -33,7 +33,7 @@ def get_db():
         db.close()
 
 def searchTutorsTopics(text: str, db: Session):
-    return db.query(Tutor).join(tutor_topic_association).join(Topic).filter(Topic.name.contains(text)).all()
+    return db.query(Tutor).join(tutor_topic_association).join(Topic).options(joinedload(Tutor.user)).filter(Topic.name.contains(text)).all()
 
 def searchTutorsClasses(text: str, db: Session):
     return db.query(Tutor).options(joinedload(Tutor.user)).filter(Tutor.classes.contains(text)).all()
