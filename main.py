@@ -4,10 +4,23 @@ from models.sampleInsert import populate_db
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
 app = FastAPI()
+
+origins = [
+   "*",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class SearchInput(BaseModel):
     text: str
