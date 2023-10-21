@@ -1,15 +1,14 @@
 from fastapi import FastAPI, Depends
-from alchemical import Alchemical
-from models.database_model import Registered_User, Tutor, Message, SessionLocal
-from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker, Session
-from sqlalchemy import select
+from models.database_model import Base, engine, Tutor, SessionLocal
+from models.sampleInsert import populate_db
+from dotenv import load_dotenv
+from sqlalchemy.orm import Session
 from pydantic import BaseModel
-app = FastAPI()
-db = Alchemical('mysql+mysqldb://root:1234@localhost:3306/tutorial_db?charset=utf8')
 
-print("hello world")
+load_dotenv()
+
+app = FastAPI()
+
 class SearchInput(BaseModel):
     text: str
 # Dependency
@@ -23,6 +22,18 @@ def get_db():
 def searchTutorsTopics(text: str, db: Session):
     return db.query(Tutor).filter(Tutor.classes.contains(text)).all()
 
+@app.get("/") 
+async def root():
+    return {"message": "Hello World"}
+
+@app.on_event("startup")
+async def gen():
+    Base.metadata.create_all(engine)
+
+@app.get("/populate")
+async def populate():
+    populate_db()
+    return {"message": "Database populated"}
 
 @app.post("/search")
 async def searchTutors(input: SearchInput, db: Session = Depends(get_db)):
