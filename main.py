@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from models.database_model import Base, engine
+from models.database_model import Base, engine,db
 from models.sampleInsert import populate_db
 from dotenv import load_dotenv
 

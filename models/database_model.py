@@ -6,6 +6,7 @@ from alchemical import Alchemical
 
 import datetime
 
+db = Alchemical(os.environ["DATABASE_URL"])
 engine = create_engine(os.environ["DATABASE_URL"], echo=True)
 Base = declarative_base()
 
