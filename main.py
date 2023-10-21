@@ -33,16 +33,16 @@ def get_db():
         db.close()
 
 def searchTutorsTopics(text: str, db: Session):
-    return db.query(Tutor).join(tutor_topic_association).join(Topic).options(joinedload(Tutor.user)).filter(Topic.name.contains(text)).all()
+    return db.query(Tutor).join(tutor_topic_association).join(Topic).options(joinedload(Tutor.user),joinedload(Tutor.topics) ).filter(Topic.name.contains(text)).all()
 
 def searchTutorsClasses(text: str, db: Session):
-    return db.query(Tutor).options(joinedload(Tutor.user)).filter(Tutor.classes.contains(text)).all()
+    return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics) ).filter(Tutor.classes.contains(text)).all()
 
 def searchTutorsLanguage(text: str, db: Session):
-    return db.query(Tutor).options(joinedload(Tutor.user)).filter(Tutor.main_languages.contains(text)).all()
+    return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics) ).filter(Tutor.main_languages.contains(text)).all()
 
 def searchTutorsAll(db: Session):
-    return db.query(Tutor).options(joinedload(Tutor.user)).all()
+    return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics)).all()
 
 @app.get("/") 
 async def root():
