@@ -1,10 +1,21 @@
 from fastapi import FastAPI
-from sqlalchemy import create_engine
+from models.database_model import Base, engine
+from models.sampleInsert import populate_db
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
-connection_string = "mysql+mysqlconnector://root:Isagi11*@localhost:3306/sqlalchemy"
-engine = create_engine(connection_string, echo=True)
 
-@app.get("/")
+@app.get("/") 
 async def root():
     return {"message": "Hello World"}
+
+@app.on_event("startup")
+async def gen():
+    Base.metadata.create_all(engine)
+
+@app.get("/populate")
+async def populate():
+    populate_db()
+    return {"message": "Database populated"}

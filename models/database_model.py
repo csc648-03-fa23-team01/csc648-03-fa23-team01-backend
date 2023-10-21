@@ -1,9 +1,12 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
+from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text, Table
 from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm import relationship
+import os
+from alchemical import Alchemical
 
 import datetime
 
+engine = create_engine(os.environ["DATABASE_URL"], echo=True)
 Base = declarative_base()
 
 class Registered_User(Base):
@@ -36,23 +39,34 @@ class Tutor(Base):
     other_languages = Column(String(255))
 
     user = relationship("Registered_User", back_populates="tutor")
+    topics = relationship('TutorTopic', back_populates='tutor')
+
+class Topic(Base):
+    __tablename__ = 'Topics'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+    
+    # Relationship to the TutorTopic association model
+    tutors = relationship('TutorTopic', back_populates='topic')
+
+class TutorTopic(Base):
+    __tablename__ = 'tutor_topic_association'
+
+    tutor_id = Column(Integer, ForeignKey('Tutors.user_id'), primary_key=True)
+    topic_id = Column(Integer, ForeignKey('Topics.id'), primary_key=True)
+
+    tutor = relationship('Tutor', back_populates='topics')
+    topic = relationship('Topic', back_populates='tutors')
+
 
 class Message(Base):
     __tablename__ = 'Messages'
 
     id = Column(Integer, primary_key=True)
-    who_sent = Column(Integer, ForeignKey('Registered_Users.id'))
+    receiver = Column(Integer, ForeignKey('Registered_Users.id'))
     message_text = Column(Text, nullable=False)
     when_sent = Column(DateTime, default=datetime.datetime.utcnow)
     message_id = Column(Integer, unique=True)
     sender = relationship("Registered_User", back_populates="messages")
 
-
-
-if __name__ == '__main__':
-    DATABASE_URI = 'mysql+mysqldb://root:W0lfezen@localhost:3306/test?charset=utf8'
-    engine = create_engine(DATABASE_URI, echo=True)  # echo=True will show generated SQL statements
-    Base.metadata.create_all(engine)
-    
-
-    
