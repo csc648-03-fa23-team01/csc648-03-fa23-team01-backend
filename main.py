@@ -35,6 +35,15 @@ def get_db():
 def searchTutorsTopics(text: str, db: Session):
     return db.query(Tutor).filter(Tutor.classes.contains(text)).all()
 
+def searchTutorsClasses(text: str, db: Session):
+    return db.query(Tutor).filter(Tutor.classes.contains(text)).all()
+
+def searchTutorsLanguage(text: str, db: Session):
+    return db.query(Tutor).filter(Tutor.main_languages.contains(text)).all()
+
+def searchTutorsAll(db: Session):
+    return db.query(Tutor).all()
+
 @app.get("/") 
 async def root():
     return {"message": "Hello World"}
@@ -49,6 +58,14 @@ async def populate():
     return {"message": "Database populated"}
 
 @app.post("/search")
-async def searchTutors(input: SearchInput, db: Session = Depends(get_db)):
-    tutors = searchTutorsTopics(input.text, db)
+async def searchTutors(type: str, input: SearchInput, db: Session = Depends(get_db)):
+    print(type)
+    if(type == "Subject"):
+        tutors = searchTutorsTopics(input.text, db)
+    elif (type == "Classes"):
+        tutors = searchTutorsClasses(input.text, db)
+    elif (type == "Language"):
+        tutors = searchTutorsLanguage(input.text, db)
+    else:
+        tutors = searchTutorsAll(db)
     return tutors

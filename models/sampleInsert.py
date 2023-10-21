@@ -165,23 +165,51 @@ def populate_db():
     )
     tutor7 = Tutor(
         user=user7,
-        description='Experienced Math Tutor',
-        price=30.0
+        description='English Literature Enthusiast',
+        price=25.0,
+        average_ratings=4.3,
+        classes='British Literature, American Literature',
+        times_available='Tue, Thu: 10am-3pm',
+        main_languages='English',
+        prefer_in_person=True,
+        cv_link='https://example.com/cv/tutor6.pdf',
+        other_languages='French, Spanish'
     )
     tutor8 = Tutor(
         user=user8,
-        description='Physics Expert',
-        price=35.0
+         description='Biology Expert',
+        price=28.0,
+        average_ratings=4.6,
+        classes='Cell Biology, Genetics',
+        times_available='Mon, Wed, Fri: 8am-12pm',
+        main_languages='English',
+        prefer_in_person=False,
+        cv_link='https://example.com/cv/tutor4.pdf',
+        other_languages='French'
     )
     tutor9 = Tutor(
         user=user9,
-        description='Experienced Math Tutor',
-        price=30.0
+        description='Chemistry Guru',
+        price=40.0,
+        average_ratings=4.8,
+        classes='Organic Chemistry, Inorganic Chemistry',
+        times_available='Tue-Thu: 10am-6pm',
+        main_languages='English',
+        prefer_in_person=True,
+        cv_link='https://example.com/cv/tutor3.pdf',
+        other_languages='Italian, Spanish'
     )
     tutor10 = Tutor(
         user=user10,
-        description='Physics Expert',
-        price=35.0
+          description='Experienced Math Tutor',
+        price=30.0,
+        average_ratings=4.5,
+        classes='Algebra, Geometry, Calculus',
+        times_available='Mon-Fri: 9am-5pm',
+        main_languages='English',
+        prefer_in_person=True,
+        cv_link='https://example.com/cv/tutor1.pdf',
+        other_languages='Spanish, French'
     )
     session.add(tutor1)
     session.add(tutor2)
