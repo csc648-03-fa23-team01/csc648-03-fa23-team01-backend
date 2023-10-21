@@ -33,50 +33,58 @@ def populate_db():
         last_name='jo',
         email='joe.jo@example.com',
         password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
 
     )
     user4 = Registered_User(
         first_name='bill',
         last_name='Doe',
         email='billy.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
+
     )
     user5 = Registered_User(
         first_name='nasd',
         last_name='Doe',
         email='asd.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg'
     )
     user6 = Registered_User(
         first_name='John',
         last_name='asd',
         email='johfsdfdsn.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Mahdi.jpg'
     )
     user7 = Registered_User(
         first_name='asff',
         last_name='Doe',
         email='sdgg.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
     )
     user8 = Registered_User(
         first_name='jhjk',
         last_name='Doe',
         email='jhjk.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
     )
     user9 = Registered_User(
         first_name='asdasdfsd',
         last_name='Doe',
         email='asdasdfsd.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg'
     )
     user10 = Registered_User(
         first_name='jkhygui',
         last_name='Doe',
         email='jkhygui.doe@example.com',
-        password='password123'
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
     )
     session.add(user1)
     session.add(user2)
