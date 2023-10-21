@@ -2,12 +2,9 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, F
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 import os
-from alchemical import Alchemical
-from sqlalchemy import UniqueConstraint
 
 import datetime
 
-db = Alchemical(os.environ["DATABASE_URL"])
 engine = create_engine(os.environ["DATABASE_URL"], echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
