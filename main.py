@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from models.database_model import Base, engine, Tutor, SessionLocal
 from models.sampleInsert import populate_db
 from dotenv import load_dotenv
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -33,16 +33,16 @@ def get_db():
         db.close()
 
 def searchTutorsTopics(text: str, db: Session):
-    return db.query(Tutor).filter(Tutor.classes.contains(text)).all()
+    return db.query(Tutor).options(joinedload(Tutor.user)).filter(Tutor.classes.contains(text)).all()
 
 def searchTutorsClasses(text: str, db: Session):
-    return db.query(Tutor).filter(Tutor.classes.contains(text)).all()
+    return db.query(Tutor).options(joinedload(Tutor.user)).filter(Tutor.classes.contains(text)).all()
 
 def searchTutorsLanguage(text: str, db: Session):
-    return db.query(Tutor).filter(Tutor.main_languages.contains(text)).all()
+    return db.query(Tutor).options(joinedload(Tutor.user)).filter(Tutor.main_languages.contains(text)).all()
 
 def searchTutorsAll(db: Session):
-    return db.query(Tutor).all()
+    return db.query(Tutor).options(joinedload(Tutor.user)).all()
 
 @app.get("/") 
 async def root():
