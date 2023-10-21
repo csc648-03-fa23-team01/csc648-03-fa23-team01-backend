@@ -20,6 +20,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: askGPT
       MYSQL_DATABASE: tutorial_db
+      MYSQL_ROOT_HOST: '%'  # Allow root connections from any host
     ports:
       - "3305:3306"
     volumes:
