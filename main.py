@@ -44,6 +44,15 @@ def searchTutorsLanguage(text: str, db: Session):
 def searchTutorsAll(db: Session):
     return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics)).all()
 
+def fetchTutor(id:int ,db: Session):
+    tutor = db.query(Tutor).filter(Tutor.user_id == id).first()
+    if tutor:
+        print(f"Tutor Found: {tutor.user_id}, {tutor.description}")
+        return tutor
+    else:
+        print("No tutor found with that ID.")
+        return None
+
 @app.get("/") 
 async def root():
     return {"message": "Hello World"}
@@ -56,6 +65,11 @@ async def gen():
 async def populate():
     populate_db()
     return {"message": "Database populated"}
+
+@app.get("/tutors")
+async def fetchTutors(id:int, db: Session = Depends(get_db)):
+    return fetchTutor(id,db)
+    
 
 @app.post("/search")
 async def searchTutors(type: str, input: SearchInput, db: Session = Depends(get_db)):
