@@ -32,7 +32,6 @@ def createUser(user: UserCreate, db: Session):
         email=user.email,
         password=user.password,
         admin_status=False,
-        profile_picture_link="fakelink",
         verified_status=False
     )
     db.add(new_user)
@@ -42,10 +41,10 @@ def createUser(user: UserCreate, db: Session):
     return new_user
 
 def createTutorHelper(user:TutorCreate, db: Session):
-    topics = []
+    Topics = []
     for topic in user.topics:
-        topics.append(getTopicsByName(topic, db))
-    new_tutor = Tutor(user_id = user.id, topics=topics, cv_link=user.cv_link, 
+        Topics.append(getTopicsByName(topic, db))
+    new_tutor = Tutor(user_id = user.id, topics=Topics, cv_link=user.cv_link, 
                       description=user.description, classes=user.classes, price=user.price, 
                       main_languages=user.main_languages, prefer_in_person=user.prefer_in_person,
                       other_languages=user.other_languages, average_ratings=user.average_ratings, 

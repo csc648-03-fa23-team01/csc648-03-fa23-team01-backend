@@ -3,12 +3,10 @@ from models.database_model import Base, engine, Tutor, SessionLocal,Topic, tutor
 from models.sampleInsert import populate_db
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session, joinedload
-from pydantic import BaseModel
-from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 from models.createUser import createUser, createTutorHelper, getUsersByID, getUsersByEmail, viewTopics
 from models.createUser import UserCreate, TutorCreate
-
+from models.search import searchTutorsTopics, searchTutorsClasses, searchTutorsLanguage, searchTutorsAll, SearchInput
 
 load_dotenv()
 
@@ -27,8 +25,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class SearchInput(BaseModel):
-    text: str
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -37,17 +33,6 @@ def get_db():
     finally:
         db.close()
 
-def searchTutorsTopics(text: str, db: Session):
-    return db.query(Tutor).join(tutor_topic_association).join(Topic).options(joinedload(Tutor.user),joinedload(Tutor.topics) ).filter(Topic.name.contains(text)).all()
-
-def searchTutorsClasses(text: str, db: Session):
-    return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics) ).filter(Tutor.classes.contains(text)).all()
-
-def searchTutorsLanguage(text: str, db: Session):
-    return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics) ).filter(Tutor.main_languages.contains(text)).all()
-
-def searchTutorsAll(db: Session):
-    return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics)).all()
 
 @app.get("/") 
 async def root():
@@ -62,6 +47,7 @@ async def populate():
     populate_db()
     return {"message": "Database populated"}
 
+# search tutors by topic, classes, language, or all
 @app.post("/search")
 async def searchTutors(type: str, input: SearchInput, db: Session = Depends(get_db)):
     print(type)
@@ -75,7 +61,7 @@ async def searchTutors(type: str, input: SearchInput, db: Session = Depends(get_
         tutors = searchTutorsAll(db)
     return tutors
 
-
+# create a new user
 @app.post("/createUsers", response_model=UserCreate)
 async def createUsers(user:UserCreate, db: Session = Depends(get_db))-> Registered_User:
     registered_userID = getUsersByID(user.id, db)
@@ -86,16 +72,28 @@ async def createUsers(user:UserCreate, db: Session = Depends(get_db))-> Register
 
     return new_user
 
-
+# create a new tutor
 @app.post("/createTutor", response_model=None)
 async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
-    print("hello test")
-    print(user)
     new_tutor = createTutorHelper(user, db)
-    return new_tutor
+    topics = [topic.name for topic in new_tutor.topics]
+    return {
+        "id": new_tutor.user_id,
+        "topics": topics,
+        "cv_link": new_tutor.cv_link,
+        "description": new_tutor.description,
+        "classes": new_tutor.classes,
+        "price": new_tutor.price,
+        "average_ratings": new_tutor.average_ratings,
+        "times_available": new_tutor.times_available,
+        "main_languages": new_tutor.main_languages,
+        "prefer_in_person": new_tutor.prefer_in_person,
+        "other_languages": new_tutor.other_languages
+    }
+    
 
 
-
+#get user's information
 @app.post("/user/{user_id}")
 def get_user_with_messages(user_id: str, db: Session = Depends(get_db)):
     
@@ -114,6 +112,7 @@ def get_user_with_messages(user_id: str, db: Session = Depends(get_db)):
         "messages": messages
     }
 
+# get all topics
 @app.get("/getTopics")
 async def getTopics(db: Session = Depends(get_db)):
     return viewTopics(db)
