@@ -25,5 +25,3 @@ async def searchTutors(input: SearchInput, db: Session = Depends(get_db)):
         tutors = searchTutorsTopics(input.text, session)
         return tutors
 
-
-

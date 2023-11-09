@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends
-from models.database_model import Base, engine, Tutor, SessionLocal,Topic, tutor_topic_association
+from models.database_model import Base, engine, Tutor, SessionLocal,Topic, tutor_topic_association, Message,Registered_User
 from models.sampleInsert import populate_db
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session, joinedload
@@ -45,7 +45,7 @@ def searchTutorsAll(db: Session):
     return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics)).all()
 
 def fetchTutor(id:int ,db: Session):
-    tutor = db.query(Tutor).filter(Tutor.user_id == id).first()
+    tutor = db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics)).filter(Tutor.user_id == id).first()
     if tutor:
         print(f"Tutor Found: {tutor.user_id}, {tutor.description}")
         return tutor
@@ -66,7 +66,7 @@ async def populate():
     populate_db()
     return {"message": "Database populated"}
 
-@app.get("/tutors")
+@app.get("/tutor")
 async def fetchTutors(id:int, db: Session = Depends(get_db)):
     return fetchTutor(id,db)
     
@@ -83,3 +83,28 @@ async def searchTutors(type: str, input: SearchInput, db: Session = Depends(get_
     else:
         tutors = searchTutorsAll(db)
     return tutors
+
+@app.post("/message")
+async def postMessage(sender_id: int, receiver_id: int, text: str, db: Session = Depends(get_db)):
+    # Check if sender and receiver exist
+    sender = db.query(Registered_User).filter(Registered_User.id == sender_id).first()
+    if not sender:
+        raise HTTPException(status_code=404, detail="Sender not found")
+
+    receiver = db.query(Registered_User).filter(Registered_User.id == receiver_id).first()
+    if not receiver:
+        raise HTTPException(status_code=404, detail="Receiver not found")
+
+    # Create a new message instance
+    new_message = Message(
+        receiver_id=receiver_id,
+        message_text=text,
+        sender_id=sender_id
+    )
+
+    # Add the new message to the database session and commit
+    db.add(new_message)
+    db.commit()
+    db.refresh(new_message)
+
+    return new_message
