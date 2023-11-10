@@ -1,19 +1,28 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text, Table
 from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, sessionmaker
 import os
 from alchemical import Alchemical
+from sqlalchemy import UniqueConstraint
 
 import datetime
 
 db = Alchemical(os.environ["DATABASE_URL"])
 engine = create_engine(os.environ["DATABASE_URL"], echo=True)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+tutor_topic_association = Table(
+    'tutor_topic',
+    Base.metadata,
+    Column('tutor_id', String(255) , ForeignKey('Tutors.user_id'), primary_key=True),
+    Column('topic_name', String(255) , ForeignKey('Topics.name'), primary_key=True)
+)
 
 class Registered_User(Base):
     __tablename__ = 'Registered_Users'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(String(255), primary_key=True)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False, unique=True)
@@ -28,7 +37,7 @@ class Registered_User(Base):
 class Tutor(Base):
     __tablename__ = 'Tutors'
 
-    user_id = Column(Integer, ForeignKey('Registered_Users.id'), primary_key=True)
+    user_id = Column(String(255), ForeignKey('Registered_Users.id'), primary_key=True)
     average_ratings = Column(Float, default=0.0)
     classes = Column(String(512))
     description = Column(String(512))
@@ -40,32 +49,22 @@ class Tutor(Base):
     other_languages = Column(String(255))
 
     user = relationship("Registered_User", back_populates="tutor")
-    topics = relationship('TutorTopic', back_populates='tutor')
+    topics = relationship('Topic', secondary=tutor_topic_association, back_populates='tutors')
+
 
 class Topic(Base):
     __tablename__ = 'Topics'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=False, primary_key=True)
     
     # Relationship to the TutorTopic association model
-    tutors = relationship('TutorTopic', back_populates='topic')
-
-class TutorTopic(Base):
-    __tablename__ = 'tutor_topic_association'
-
-    tutor_id = Column(Integer, ForeignKey('Tutors.user_id'), primary_key=True)
-    topic_id = Column(Integer, ForeignKey('Topics.id'), primary_key=True)
-
-    tutor = relationship('Tutor', back_populates='topics')
-    topic = relationship('Topic', back_populates='tutors')
+    tutors = relationship('Tutor', secondary=tutor_topic_association, back_populates='topics')
 
 
 class Message(Base):
     __tablename__ = 'Messages'
 
     id = Column(Integer, primary_key=True)
-    receiver = Column(Integer, ForeignKey('Registered_Users.id'))
+    receiver = Column(String(255), ForeignKey('Registered_Users.id'))
     message_text = Column(Text, nullable=False)
     when_sent = Column(DateTime, default=datetime.datetime.utcnow)
     message_id = Column(Integer, unique=True)
