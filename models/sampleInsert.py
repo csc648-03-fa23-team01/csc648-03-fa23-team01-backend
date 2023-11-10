@@ -17,70 +17,61 @@ def populate_db():
         first_name='John',
         last_name='Doe',
         email='john.doe@example.com',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/jake.jpg'
     )
     user2 = Registered_User(
         first_name='Jane',
         last_name='Doe',
         email='jane.doe@example.com',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/jessica.jpg'
-
     )
     user3 = Registered_User(
         first_name='joe',
         last_name='jo',
         email='joe.jo@example.com',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
-
     )
     user4 = Registered_User(
         first_name='bill',
         last_name='Doe',
         email='billy.doe@example.com',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
-
     )
     user5 = Registered_User(
         first_name='nasd',
         last_name='Doe',
         email='asd.doe@example.com',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg'
     )
     user6 = Registered_User(
         first_name='John',
         last_name='asd',
         email='johfsdfdsn.doe@example.com',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Mahdi.jpg'
     )
     user7 = Registered_User(
         first_name='asff',
         last_name='Doe',
         email='sdgg.doe@example.com',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
     )
     user8 = Registered_User(
         first_name='jhjk',
         last_name='Doe',
         email='jhjk.doe@example.com',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
     )
     user9 = Registered_User(
         first_name='asdasdfsd',
         last_name='Doe',
         email='asdasdfsd.doe@example.com',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg'
     )
     user10 = Registered_User(
         first_name='jkhygui',
         last_name='Doe',
         email='jkhygui.doe@example.com',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
     )
     user11 = Registered_User(
         first_name='david',
         last_name='Doe',
         email='david.doe@example.com',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
+    )
+    user12 = Registered_User(
+        first_name='david',
+        last_name='chen',
+        email='david.chen@example.com',
     )
     session.add(user1)
     session.add(user2)
@@ -93,6 +84,7 @@ def populate_db():
     session.add(user9)
     session.add(user10)
     session.add(user11)
+    session.add(user12)
      # Adding Topics
     topic1 = Topic(name='Math')
     topic2 = Topic(name='Physics')

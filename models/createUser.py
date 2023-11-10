@@ -21,6 +21,8 @@ class TutorCreate(BaseModel):
     main_languages: str
     prefer_in_person: bool
     other_languages: str
+    profile_picture_link: str
+    video_link: str
 
 def createUser(user: UserCreate, db: Session):
     new_user = Registered_User(
@@ -44,7 +46,8 @@ def createTutorHelper(user:TutorCreate, db: Session):
                       description=user.description, classes=user.classes, price=user.price, 
                       main_languages=user.main_languages, prefer_in_person=user.prefer_in_person,
                       other_languages=user.other_languages, average_ratings=user.average_ratings, 
-                      times_available=user.times_available)
+                      times_available=user.times_available, profile_picture_link=user.profile_picture_link,
+                      video_link=user.video_link)
     db.add(new_tutor)
     db.commit()
     db.refresh(new_tutor)

@@ -26,7 +26,6 @@ class Registered_User(Base):
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
     admin_status = Column(Boolean, default=False)
-    profile_picture_link = Column(String(512))
     verified_status = Column(Boolean, default=False)
 
     tutor = relationship("Tutor", uselist=False, back_populates="user")
@@ -45,7 +44,9 @@ class Tutor(Base):
     prefer_in_person = Column(Boolean, default=False)
     cv_link = Column(String(512))
     other_languages = Column(String(255))
-
+    profile_picture_link = Column(String(512))
+    video_link = Column(String(512))
+    
     user = relationship("Registered_User", back_populates="tutor")
     topics = relationship('Topic', secondary=tutor_topic_association, back_populates='tutors')
 

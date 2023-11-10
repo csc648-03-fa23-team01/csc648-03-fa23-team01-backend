@@ -87,7 +87,9 @@ async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
         "times_available": new_tutor.times_available,
         "main_languages": new_tutor.main_languages,
         "prefer_in_person": new_tutor.prefer_in_person,
-        "other_languages": new_tutor.other_languages
+        "other_languages": new_tutor.other_languages,
+        "profile_picture_link": new_tutor.profile_picture_link,
+        "video_link": new_tutor.video_link
     }
     
 
@@ -104,7 +106,6 @@ def get_user_with_messages(user_email: str, db: Session = Depends(get_db)):
         "firstName": user.first_name,
         "lastName": user.last_name,
         "email": user.email,
-        "profilePictureLink": user.profile_picture_link,
         "adminStatus": user.admin_status,
         "verifiedStatus": user.verified_status,
         "messages": messages
