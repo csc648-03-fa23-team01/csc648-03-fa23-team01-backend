@@ -38,16 +38,16 @@ def get_db():
         db.close()
 
 def searchTutorsTopics(text: str, db: Session):
-    return db.query(Tutor).join(tutor_topic_association).join(Topic).options(joinedload(Tutor.user),joinedload(Tutor.topics) ).filter(Topic.name.contains(text)).all()
+    return db.query(Tutor).join(tutor_topic_association).join(Topic).options(joinedload(Tutor.user),joinedload(Tutor.topics),joinedload(Tutor.times)).filter(Topic.name.contains(text)).all()
 
 def searchTutorsClasses(text: str, db: Session):
-    return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics) ).filter(Tutor.classes.contains(text)).all()
+    return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics),joinedload(Tutor.times) ).filter(Tutor.classes.contains(text)).all()
 
 def searchTutorsLanguage(text: str, db: Session):
-    return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics) ).filter(Tutor.main_languages.contains(text)).all()
+    return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics),joinedload(Tutor.times)).filter(Tutor.main_languages.contains(text)).all()
 
 def searchTutorsAll(db: Session):
-    return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics)).all()
+    return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics),joinedload(Tutor.times)).all()
 
 @app.get("/") 
 async def root():
@@ -89,8 +89,6 @@ async def createUsers(user:UserCreate, db: Session = Depends(get_db))-> Register
 
 @app.post("/createTutor", response_model=None)
 async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
-    print("hello test")
-    print(user)
     new_tutor = createTutorHelper(user, db)
     return new_tutor
 

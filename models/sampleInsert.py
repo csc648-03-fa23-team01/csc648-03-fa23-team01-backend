@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
-from models.database_model import Registered_User, Tutor, Topic, Message
+from models.database_model import Registered_User, Tutor, Topic, Message, Times
 from dotenv import load_dotenv
 import os
 
@@ -133,14 +133,44 @@ def populate_db():
     session.add(topic6)
     session.add(topic7)
     session.add(topic8)
-    # Adding Tutors
+    # Adding 
+    times1 = Times(
+        day='Monday',
+        start_time='9:00',
+        end_time='10:00'
+    )
+    times2 = Times(
+        day='Tuesday',
+        start_time='9:00',
+        end_time='10:00'
+    )
+    times3 = Times(
+        day='Wednesday',
+        start_time='9:00',
+        end_time='10:00'
+    )
+    times4 = Times(
+        day='Thursday',
+        start_time='9:00',
+        end_time='10:00'
+    )
+    times5 = Times(
+        day='Friday',
+        start_time='9:00',
+        end_time='10:00'
+    )
+    session.add(times1)
+    session.add(times2)
+    session.add(times3)
+    session.add(times4)
+    session.add(times5)
     tutor1 = Tutor(
         user=user1,
         description='Experienced Math Tutor',
         price=30.0,
         average_ratings=4.5,
         classes='Algebra, Geometry, Calculus',
-        times_available='Mon-Fri: 9am-5pm',
+        times=[times1, times2, times3,],
         main_languages='English',
         prefer_in_person=True,
         cv_link='https://example.com/cv/tutor1.pdf',
@@ -153,6 +183,7 @@ def populate_db():
         description='Physics Expert',
         price=35.0,
         average_ratings=4.7,
+        times = [times4, times5],
         classes='Physics I, Physics II',
         times_available='Mon-Wed, Fri: 10am-4pm',
         main_languages='English',
@@ -165,6 +196,7 @@ def populate_db():
         user=user3,
         description='Chemistry Guru',
         price=40.0,
+        times=[times1, times3],
         average_ratings=4.8,
         classes='Organic Chemistry, Inorganic Chemistry',
         times_available='Tue-Thu: 10am-6pm',
@@ -180,6 +212,7 @@ def populate_db():
         description='Biology Expert',
         price=28.0,
         average_ratings=4.6,
+        times = [times2, times5],
         classes='Cell Biology, Genetics',
         times_available='Mon, Wed, Fri: 8am-12pm',
         main_languages='English',
@@ -192,6 +225,7 @@ def populate_db():
         user=user5,
         description='Statistics Whiz',
         price=32.0,
+        times = [times1, times3, times4],
         average_ratings=4.7,
         classes='Intro to Statistics, Advanced Statistics',
         times_available='Mon-Fri: 1pm-4pm',
@@ -205,6 +239,7 @@ def populate_db():
         user=user6,
         description='English Literature Enthusiast',
         price=25.0,
+        times = [times1, times2, times3, times4, times5],
         average_ratings=4.3,
         classes='British Literature, American Literature',
         times_available='Tue, Thu: 10am-3pm',
@@ -218,6 +253,7 @@ def populate_db():
         user=user7,
         description='English Literature Enthusiast',
         price=25.0,
+        times = [times1, times4, times5],
         average_ratings=4.3,
         classes='British Literature, American Literature',
         times_available='Tue, Thu: 10am-3pm',
@@ -230,6 +266,7 @@ def populate_db():
     tutor8 = Tutor(
         user=user8,
          description='Biology Expert',
+        times = [times4, times5],
         price=28.0,
         average_ratings=4.6,
         classes='Cell Biology, Genetics',
@@ -243,6 +280,7 @@ def populate_db():
     tutor9 = Tutor(
         user=user9,
         description='Chemistry Guru',
+        times = [times1, times3],
         price=40.0,
         average_ratings=4.8,
         classes='Organic Chemistry, Inorganic Chemistry',
@@ -257,6 +295,7 @@ def populate_db():
         user=user10,
           description='Experienced Math Tutor',
         price=30.0,
+        times = [times1, times2, times3,],
         average_ratings=4.5,
         classes='Algebra, Geometry, Calculus',
         times_available='Mon-Fri: 9am-5pm',
