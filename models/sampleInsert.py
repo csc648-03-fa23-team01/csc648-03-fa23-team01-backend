@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
-from models.database_model import Registered_User, Tutor, Topic, Message
+from models.database_model import Registered_User, Tutor, Topic, Message, Times
 from dotenv import load_dotenv
 import os
 
@@ -14,6 +14,7 @@ def populate_db():
     # Create some sample data
     # Adding Registered Users
     user1 = Registered_User(
+        id="1",
         first_name='John',
         last_name='Doe',
         email='john.doe@example.com',
@@ -21,6 +22,7 @@ def populate_db():
         profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/jake.jpg'
     )
     user2 = Registered_User(
+        id='2',
         first_name='Jane',
         last_name='Doe',
         email='jane.doe@example.com',
@@ -29,6 +31,7 @@ def populate_db():
 
     )
     user3 = Registered_User(
+        id='3',
         first_name='joe',
         last_name='jo',
         email='joe.jo@example.com',
@@ -37,6 +40,7 @@ def populate_db():
 
     )
     user4 = Registered_User(
+        id='4',
         first_name='bill',
         last_name='Doe',
         email='billy.doe@example.com',
@@ -45,6 +49,7 @@ def populate_db():
 
     )
     user5 = Registered_User(
+        id='5',
         first_name='nasd',
         last_name='Doe',
         email='asd.doe@example.com',
@@ -52,6 +57,7 @@ def populate_db():
         profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg'
     )
     user6 = Registered_User(
+        id='6',
         first_name='John',
         last_name='asd',
         email='johfsdfdsn.doe@example.com',
@@ -59,6 +65,7 @@ def populate_db():
         profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Mahdi.jpg'
     )
     user7 = Registered_User(
+        id='7',
         first_name='asff',
         last_name='Doe',
         email='sdgg.doe@example.com',
@@ -66,6 +73,7 @@ def populate_db():
         profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
     )
     user8 = Registered_User(
+        id='8',
         first_name='jhjk',
         last_name='Doe',
         email='jhjk.doe@example.com',
@@ -73,6 +81,7 @@ def populate_db():
         profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
     )
     user9 = Registered_User(
+        id='9',
         first_name='asdasdfsd',
         last_name='Doe',
         email='asdasdfsd.doe@example.com',
@@ -80,9 +89,18 @@ def populate_db():
         profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg'
     )
     user10 = Registered_User(
+        id='10',
         first_name='jkhygui',
         last_name='Doe',
         email='jkhygui.doe@example.com',
+        password='password123',
+        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
+    )
+    user11 = Registered_User(
+        id='11',
+        first_name='david',
+        last_name='Doe',
+        email='david.doe@example.com',
         password='password123',
         profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
     )
@@ -96,7 +114,7 @@ def populate_db():
     session.add(user8)
     session.add(user9)
     session.add(user10)
-
+    session.add(user11)
      # Adding Topics
     topic1 = Topic(name='Math')
     topic2 = Topic(name='Physics')
@@ -115,14 +133,44 @@ def populate_db():
     session.add(topic6)
     session.add(topic7)
     session.add(topic8)
-    # Adding Tutors
+    # Adding 
+    times1 = Times(
+        day='Monday',
+        start_time='9:00',
+        end_time='10:00'
+    )
+    times2 = Times(
+        day='Tuesday',
+        start_time='9:00',
+        end_time='10:00'
+    )
+    times3 = Times(
+        day='Wednesday',
+        start_time='9:00',
+        end_time='10:00'
+    )
+    times4 = Times(
+        day='Thursday',
+        start_time='9:00',
+        end_time='10:00'
+    )
+    times5 = Times(
+        day='Friday',
+        start_time='9:00',
+        end_time='10:00'
+    )
+    session.add(times1)
+    session.add(times2)
+    session.add(times3)
+    session.add(times4)
+    session.add(times5)
     tutor1 = Tutor(
         user=user1,
         description='Experienced Math Tutor',
         price=30.0,
         average_ratings=4.5,
         classes='Algebra, Geometry, Calculus',
-        times_available='Mon-Fri: 9am-5pm',
+        times=[times1, times2, times3,],
         main_languages='English',
         prefer_in_person=True,
         cv_link='https://example.com/cv/tutor1.pdf',
@@ -135,6 +183,7 @@ def populate_db():
         description='Physics Expert',
         price=35.0,
         average_ratings=4.7,
+        times = [times4, times5],
         classes='Physics I, Physics II',
         times_available='Mon-Wed, Fri: 10am-4pm',
         main_languages='English',
@@ -147,6 +196,7 @@ def populate_db():
         user=user3,
         description='Chemistry Guru',
         price=40.0,
+        times=[times1, times3],
         average_ratings=4.8,
         classes='Organic Chemistry, Inorganic Chemistry',
         times_available='Tue-Thu: 10am-6pm',
@@ -162,6 +212,7 @@ def populate_db():
         description='Biology Expert',
         price=28.0,
         average_ratings=4.6,
+        times = [times2, times5],
         classes='Cell Biology, Genetics',
         times_available='Mon, Wed, Fri: 8am-12pm',
         main_languages='English',
@@ -174,6 +225,7 @@ def populate_db():
         user=user5,
         description='Statistics Whiz',
         price=32.0,
+        times = [times1, times3, times4],
         average_ratings=4.7,
         classes='Intro to Statistics, Advanced Statistics',
         times_available='Mon-Fri: 1pm-4pm',
@@ -187,6 +239,7 @@ def populate_db():
         user=user6,
         description='English Literature Enthusiast',
         price=25.0,
+        times = [times1, times2, times3, times4, times5],
         average_ratings=4.3,
         classes='British Literature, American Literature',
         times_available='Tue, Thu: 10am-3pm',
@@ -200,6 +253,7 @@ def populate_db():
         user=user7,
         description='English Literature Enthusiast',
         price=25.0,
+        times = [times1, times4, times5],
         average_ratings=4.3,
         classes='British Literature, American Literature',
         times_available='Tue, Thu: 10am-3pm',
@@ -212,6 +266,7 @@ def populate_db():
     tutor8 = Tutor(
         user=user8,
          description='Biology Expert',
+        times = [times4, times5],
         price=28.0,
         average_ratings=4.6,
         classes='Cell Biology, Genetics',
@@ -225,6 +280,7 @@ def populate_db():
     tutor9 = Tutor(
         user=user9,
         description='Chemistry Guru',
+        times = [times1, times3],
         price=40.0,
         average_ratings=4.8,
         classes='Organic Chemistry, Inorganic Chemistry',
@@ -239,6 +295,7 @@ def populate_db():
         user=user10,
           description='Experienced Math Tutor',
         price=30.0,
+        times = [times1, times2, times3,],
         average_ratings=4.5,
         classes='Algebra, Geometry, Calculus',
         times_available='Mon-Fri: 9am-5pm',

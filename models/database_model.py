@@ -15,14 +15,21 @@ Base = declarative_base()
 tutor_topic_association = Table(
     'tutor_topic',
     Base.metadata,
-    Column('tutor_id', Integer, ForeignKey('Tutors.user_id'), primary_key=True),
-    Column('topic_id', Integer, ForeignKey('Topics.id'), primary_key=True)
+    Column('tutor_id', String(255) , ForeignKey('Tutors.user_id'), primary_key=True),
+    Column('topic_name', String(255) , ForeignKey('Topics.name'), primary_key=True)
+)
+
+tutor_time_association = Table(
+    'tutor_time',
+    Base.metadata,
+    Column('tutor_id', String(255), ForeignKey('Tutors.user_id'), primary_key=True),
+    Column('time_id', Integer, ForeignKey('Times.id'), primary_key=True)
 )
 
 class Registered_User(Base):
     __tablename__ = 'Registered_Users'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(String(255), primary_key=True)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False, unique=True)
@@ -37,12 +44,11 @@ class Registered_User(Base):
 class Tutor(Base):
     __tablename__ = 'Tutors'
 
-    user_id = Column(Integer, ForeignKey('Registered_Users.id'), primary_key=True)
+    user_id = Column(String(255), ForeignKey('Registered_Users.id'), primary_key=True)
     average_ratings = Column(Float, default=0.0)
     classes = Column(String(512))
     description = Column(String(512))
     price = Column(Float, default=0.0)
-    times_available = Column(String(512))
     main_languages = Column(String(255))
     prefer_in_person = Column(Boolean, default=False)
     cv_link = Column(String(512))
@@ -50,16 +56,24 @@ class Tutor(Base):
 
     user = relationship("Registered_User", back_populates="tutor")
     topics = relationship('Topic', secondary=tutor_topic_association, back_populates='tutors')
+    times = relationship('Time', secondary=tutor_time_association, back_populates='tutors')
 
 
 class Topic(Base):
     __tablename__ = 'Topics'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=False, primary_key=True)
     
     # Relationship to the TutorTopic association model
     tutors = relationship('Tutor', secondary=tutor_topic_association, back_populates='topics')
+
+class Times(Base):
+    __tablename__ = 'Times'
+
+    id = Column(Integer, primary_key=True)
+    day = Column(String(255), nullable=False)
+    start_time = Column(String(255), nullable=False)
+    end_time = Column(String(255), nullable=False)
+    tutors = relationship('Tutor', secondary=tutor_time_association, back_populates='times')
 
 
 class Message(Base):
