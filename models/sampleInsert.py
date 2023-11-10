@@ -318,44 +318,44 @@ def populate_db():
 
     # Adding Messages
     message1 = Message(
-        receiver=user1.id,
+        receiver_id=user1.id,
         message_text='Hello, can we schedule a session for next Monday?',
-        sender=user1
+        sender_id=user1.id
     )
     message2 = Message(
-        receiver=user2.id,
+        receiver_id=user2.id,
         message_text='Sure, see you then!',
-        sender=user2
+        sender_id=user2.id
     )
     message3 = Message(
-        receiver=user1.id,
+        receiver_id=user1.id,
         message_text='Heasdasd session for next Monday?',
-        sender=user1
+        sender_id=user1.id
     )
     message4 = Message(
-        receiver=user3.id,
+        receiver_id=user3.id,
         message_text='Sure, umm!',
-        sender=user2
+        sender_id=user2.id
     )
     message5 = Message(
-        receiver=user4.id,
+        receiver_id=user4.id,
         message_text='Hello, bruh?',
-        sender=user1
+        sender_id=user1.id
     )
     message6 = Message(
-        receiver=user5.id,
+        receiver_id=user5.id,
         message_text='stop!',
-        sender=user2
+        sender_id=user2.id
     )
     message7 = Message(
-        receiver=user6.id,
+        receiver_id=user6.id,
         message_text='nooooo?',
-        sender=user2
+        sender_id=user2.id
     )
     message8 = Message(
-        receiver=user7.id,
+        receiver_id=user7.id,
         message_text='asdasdasdasd!',
-        sender=user2
+        sender_id=user2.id
     )
     session.add(message1)
     session.add(message2)

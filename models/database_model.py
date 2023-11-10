@@ -39,8 +39,8 @@ class Registered_User(Base):
     verified_status = Column(Boolean, default=False)
 
     tutor = relationship("Tutor", uselist=False, back_populates="user")
-    messages = relationship("Message", back_populates="sender")
-
+    messages_sent = relationship("Message", foreign_keys="[Message.sender_id]")
+    messages_received = relationship("Message", foreign_keys="[Message.receiver_id]")
 class Tutor(Base):
     __tablename__ = 'Tutors'
 
@@ -80,9 +80,10 @@ class Message(Base):
     __tablename__ = 'Messages'
 
     id = Column(Integer, primary_key=True)
-    receiver = Column(String(255), ForeignKey('Registered_Users.id'))
+    sender_id = Column(Integer, ForeignKey('Registered_Users.id'))
+    receiver_id = Column(Integer, ForeignKey('Registered_Users.id'))
     message_text = Column(Text, nullable=False)
     when_sent = Column(DateTime, default=datetime.datetime.utcnow)
-    message_id = Column(Integer, unique=True)
-    sender = relationship("Registered_User", back_populates="messages")
 
+    sender = relationship("Registered_User", foreign_keys=[sender_id], back_populates="messages_sent")
+    receiver = relationship("Registered_User", foreign_keys=[receiver_id], back_populates="messages_received")
