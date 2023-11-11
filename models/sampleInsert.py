@@ -55,6 +55,7 @@ def populate_db():
                         main_languages='English', prefer_in_person=i%2==0,
                         cv_link=f'https://example.com/cv/tutor{i}.pdf', 
                         profile_picture_link=profile_picture_links[i],
+                        times=random.sample(times, random.randint(1, 3)),
                         other_languages='Spanish, French', topics=random.sample(topics, random.randint(2, 4)))
                 for i in range(10)
             ]
