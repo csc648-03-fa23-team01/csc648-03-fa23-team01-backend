@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from models.database_model import Registered_User, Tutor, Topic, Message, Times
 from dotenv import load_dotenv
 from sqlalchemy.exc import IntegrityError
+import random
 import os
 
 def populate_db():
@@ -54,7 +55,7 @@ def populate_db():
                         main_languages='English', prefer_in_person=i%2==0,
                         cv_link=f'https://example.com/cv/tutor{i}.pdf', 
                         profile_picture_link=profile_picture_links[i],
-                        other_languages='Spanish, French', topics=[topics[i]])
+                        other_languages='Spanish, French', topics=random.sample(topics, random.randint(2, 4)))
                 for i in range(10)
             ]
             session.add_all(tutors)
