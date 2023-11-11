@@ -14,95 +14,64 @@ def populate_db():
     # Create some sample data
     # Adding Registered Users
     user1 = Registered_User(
-        id="1",
         first_name='John',
         last_name='Doe',
         email='john.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/jake.jpg'
     )
     user2 = Registered_User(
-        id='2',
         first_name='Jane',
         last_name='Doe',
         email='jane.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/jessica.jpg'
-
     )
     user3 = Registered_User(
-        id='3',
         first_name='joe',
         last_name='jo',
         email='joe.jo@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
-
     )
     user4 = Registered_User(
-        id='4',
         first_name='bill',
         last_name='Doe',
         email='billy.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
-
     )
     user5 = Registered_User(
-        id='5',
         first_name='nasd',
         last_name='Doe',
         email='asd.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg'
     )
     user6 = Registered_User(
-        id='6',
         first_name='John',
         last_name='asd',
         email='johfsdfdsn.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Mahdi.jpg'
     )
     user7 = Registered_User(
-        id='7',
         first_name='asff',
         last_name='Doe',
         email='sdgg.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
     )
     user8 = Registered_User(
-        id='8',
         first_name='jhjk',
         last_name='Doe',
         email='jhjk.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
     )
     user9 = Registered_User(
-        id='9',
         first_name='asdasdfsd',
         last_name='Doe',
         email='asdasdfsd.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg'
     )
     user10 = Registered_User(
-        id='10',
         first_name='jkhygui',
         last_name='Doe',
         email='jkhygui.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
     )
     user11 = Registered_User(
-        id='11',
         first_name='david',
         last_name='Doe',
         email='david.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
+    )
+    user12 = Registered_User(
+        first_name='david',
+        last_name='chen',
+        email='david.chen@example.com',
     )
     session.add(user1)
     session.add(user2)
@@ -115,6 +84,7 @@ def populate_db():
     session.add(user9)
     session.add(user10)
     session.add(user11)
+    session.add(user12)
      # Adding Topics
     topic1 = Topic(name='Math')
     topic2 = Topic(name='Physics')
@@ -279,42 +249,42 @@ def populate_db():
 
     # Adding Messages
     message1 = Message(
-        receiver=user1.id,
+        receiver=user1.email,
         message_text='Hello, can we schedule a session for next Monday?',
         sender=user1
     )
     message2 = Message(
-        receiver=user2.id,
+        receiver=user2.email,
         message_text='Sure, see you then!',
         sender=user2
     )
     message3 = Message(
-        receiver=user1.id,
+        receiver=user1.email,
         message_text='Heasdasd session for next Monday?',
         sender=user1
     )
     message4 = Message(
-        receiver=user3.id,
+        receiver=user3.email,
         message_text='Sure, umm!',
         sender=user2
     )
     message5 = Message(
-        receiver=user4.id,
+        receiver=user4.email,
         message_text='Hello, bruh?',
         sender=user1
     )
     message6 = Message(
-        receiver=user5.id,
+        receiver=user5.email,
         message_text='stop!',
         sender=user2
     )
     message7 = Message(
-        receiver=user6.id,
+        receiver=user6.email,
         message_text='nooooo?',
         sender=user2
     )
     message8 = Message(
-        receiver=user7.id,
+        receiver=user7.email,
         message_text='asdasdasdasd!',
         sender=user2
     )

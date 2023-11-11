@@ -4,7 +4,7 @@ from models.sampleInsert import populate_db
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session, joinedload
 from fastapi.middleware.cors import CORSMiddleware
-from models.createUser import createUser, createTutorHelper, getUsersByID, getUsersByEmail, viewTopics
+from models.createUser import createUser, createTutorHelper, getUsersByEmail, viewTopics
 from models.createUser import UserCreate, TutorCreate
 from models.search import searchTutorsTopics, searchTutorsClasses, searchTutorsLanguage, searchTutorsAll, SearchInput
 
@@ -64,9 +64,8 @@ async def searchTutors(type: str, input: SearchInput, db: Session = Depends(get_
 # create a new user
 @app.post("/createUsers", response_model=UserCreate)
 async def createUsers(user:UserCreate, db: Session = Depends(get_db))-> Registered_User:
-    registered_userID = getUsersByID(user.id, db)
     registered_userEmail = getUsersByEmail(user.email, db)
-    if registered_userID or registered_userEmail:
+    if  registered_userEmail:
             raise HTTPException(status_code=400, detail="User already registered")
     new_user = createUser(user, db)
 
@@ -78,7 +77,7 @@ async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
     new_tutor = createTutorHelper(user, db)
     topics = [topic.name for topic in new_tutor.topics]
     return {
-        "id": new_tutor.user_id,
+        "email": new_tutor.user_email,
         "topics": topics,
         "cv_link": new_tutor.cv_link,
         "description": new_tutor.description,
@@ -88,25 +87,25 @@ async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
         "times_available": new_tutor.times_available,
         "main_languages": new_tutor.main_languages,
         "prefer_in_person": new_tutor.prefer_in_person,
-        "other_languages": new_tutor.other_languages
+        "other_languages": new_tutor.other_languages,
+        "profile_picture_link": new_tutor.profile_picture_link,
+        "video_link": new_tutor.video_link
     }
     
 
 
 #get user's information
-@app.post("/user/{user_id}")
-def get_user_with_messages(user_id: str, db: Session = Depends(get_db)):
+@app.post("/user/{user_email}")
+def get_user_with_messages(user_email: str, db: Session = Depends(get_db)):
     
-    user = getUsersByID(user_id, db)
+    user = getUsersByEmail(user_email, db)
     messages = [message.message_text for message in user.messages]
     
     return {
-        "id": user.id,
+        "email": user.email,
         "firstName": user.first_name,
         "lastName": user.last_name,
         "email": user.email,
-        "password": user.password,
-        "profilePictureLink": user.profile_picture_link,
         "adminStatus": user.admin_status,
         "verifiedStatus": user.verified_status,
         "messages": messages
