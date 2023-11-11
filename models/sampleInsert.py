@@ -1,371 +1,79 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, ForeignKey, DateTime, Text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from models.database_model import Registered_User, Tutor, Topic, Message, Times
 from dotenv import load_dotenv
+from sqlalchemy.exc import IntegrityError
 import os
 
 def populate_db():
-    DATABASE_URL = os.environ["DATABASE_URL"]
+    # Load environment variables from .env file
+    load_dotenv()
+
+    DATABASE_URL = os.environ.get("DATABASE_URL")
+    if not DATABASE_URL:
+        raise ValueError("DATABASE_URL environment variable not set")
+
     engine = create_engine(DATABASE_URL, echo=True)
     Session = sessionmaker(bind=engine)
-    session = Session()
 
-    # Create some sample data
-    # Adding Registered Users
-    user1 = Registered_User(
-        id="1",
-        first_name='John',
-        last_name='Doe',
-        email='john.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/jake.jpg'
-    )
-    user2 = Registered_User(
-        id='2',
-        first_name='Jane',
-        last_name='Doe',
-        email='jane.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/jessica.jpg'
+    try:
+        with Session() as session:
+            # Add Registered Users
+            users = [
+                Registered_User(first_name=f'User{i}', last_name='Doe', email=f'user{i}@example.com')
+                for i in range(1, 21)  # Creating 20 users
+            ]
+            session.add_all(users)
 
-    )
-    user3 = Registered_User(
-        id='3',
-        first_name='joe',
-        last_name='jo',
-        email='joe.jo@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
+            # Add Topics
+            topic_names = ['Math', 'Physics', 'Chemistry', 'Biology', 'English', 
+                            'History', 'Geography', 'Art', 'Music', 'Computer Science']
+            topics = [Topic(name=name) for name in topic_names]
+            session.add_all(topics)
 
-    )
-    user4 = Registered_User(
-        id='4',
-        first_name='bill',
-        last_name='Doe',
-        email='billy.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
+            # Add Times
+            days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+            times = [Times(day=day, start_time=f'9:00', end_time=f'10:00') for day in days]
+            session.add_all(times)
+            profile_picture_links = [
+                'https://awsgroup1media.s3.us-west-1.amazonaws.com/jake.jpg',
+                'https://awsgroup1media.s3.us-west-1.amazonaws.com/jessica.jpg',
+                'https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp',
+                'https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp', 
+                'https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg',
+                'https://awsgroup1media.s3.us-west-1.amazonaws.com/Mahdi.jpg',
+                'https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg',
+                'https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp',  
+                'https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg', 
+                'https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'  
+            ]
+            # Add Tutors
+            tutors = [
+                Tutor(user=users[i], description=f'Expert in {topic_names[i]}', price=30.0 + i, 
+                        average_ratings=4.0 + i%5 * 0.1, classes=topic_names[i], 
+                        main_languages='English', prefer_in_person=i%2==0,
+                        cv_link=f'https://example.com/cv/tutor{i}.pdf', 
+                        profile_picture_link=profile_picture_links[i],
+                        other_languages='Spanish, French', topics=[topics[i]])
+                for i in range(10)
+            ]
+            session.add_all(tutors)
 
-    )
-    user5 = Registered_User(
-        id='5',
-        first_name='nasd',
-        last_name='Doe',
-        email='asd.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg'
-    )
-    user6 = Registered_User(
-        id='6',
-        first_name='John',
-        last_name='asd',
-        email='johfsdfdsn.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Mahdi.jpg'
-    )
-    user7 = Registered_User(
-        id='7',
-        first_name='asff',
-        last_name='Doe',
-        email='sdgg.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
-    )
-    user8 = Registered_User(
-        id='8',
-        first_name='jhjk',
-        last_name='Doe',
-        email='jhjk.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Barry.webp'
-    )
-    user9 = Registered_User(
-        id='9',
-        first_name='asdasdfsd',
-        last_name='Doe',
-        email='asdasdfsd.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/Aria.jpg'
-    )
-    user10 = Registered_User(
-        id='10',
-        first_name='jkhygui',
-        last_name='Doe',
-        email='jkhygui.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
-    )
-    user11 = Registered_User(
-        id='11',
-        first_name='david',
-        last_name='Doe',
-        email='david.doe@example.com',
-        password='password123',
-        profile_picture_link='https://awsgroup1media.s3.us-west-1.amazonaws.com/john.jpg'
-    )
-    session.add(user1)
-    session.add(user2)
-    session.add(user3)
-    session.add(user4)
-    session.add(user5)
-    session.add(user6)
-    session.add(user7)
-    session.add(user8)
-    session.add(user9)
-    session.add(user10)
-    session.add(user11)
-     # Adding Topics
-    topic1 = Topic(name='Math')
-    topic2 = Topic(name='Physics')
-    topic3 = Topic(name='Science')
-    topic4 = Topic(name='Reading')
-    topic5 = Topic(name='English')
-    topic6 = Topic(name='Spanish')
-    topic7 = Topic(name='umm')
-    topic8 = Topic(name='yes')
-    session.commit()
-    session.add(topic1)
-    session.add(topic2)
-    session.add(topic3)
-    session.add(topic4)
-    session.add(topic5)
-    session.add(topic6)
-    session.add(topic7)
-    session.add(topic8)
-    # Adding 
-    times1 = Times(
-        day='Monday',
-        start_time='9:00',
-        end_time='10:00'
-    )
-    times2 = Times(
-        day='Tuesday',
-        start_time='9:00',
-        end_time='10:00'
-    )
-    times3 = Times(
-        day='Wednesday',
-        start_time='9:00',
-        end_time='10:00'
-    )
-    times4 = Times(
-        day='Thursday',
-        start_time='9:00',
-        end_time='10:00'
-    )
-    times5 = Times(
-        day='Friday',
-        start_time='9:00',
-        end_time='10:00'
-    )
-    session.add(times1)
-    session.add(times2)
-    session.add(times3)
-    session.add(times4)
-    session.add(times5)
-    tutor1 = Tutor(
-        user=user1,
-        description='Experienced Math Tutor',
-        price=30.0,
-        average_ratings=4.5,
-        classes='Algebra, Geometry, Calculus',
-        times=[times1, times2, times3,],
-        main_languages='English',
-        prefer_in_person=True,
-        cv_link='https://example.com/cv/tutor1.pdf',
-        other_languages='Spanish, French',
-        topics = [topic1, topic2]
-    )
+            # Add Messages
+            messages = [
+                Message(sender_id=users[i].email, receiver_id=users[i+1].email, 
+                        message_text=f'Message content {i}')
+                for i in range(19)  # Creating 20 messages
+            ]
+            session.add_all(messages)
 
-    tutor2 = Tutor(
-        user=user2,
-        description='Physics Expert',
-        price=35.0,
-        average_ratings=4.7,
-        times = [times4, times5],
-        classes='Physics I, Physics II',
-        times_available='Mon-Wed, Fri: 10am-4pm',
-        main_languages='English',
-        prefer_in_person=False,
-        cv_link='https://example.com/cv/tutor2.pdf',
-        other_languages='German',
-        topics = [topic2, topic3]
-    )
-    tutor3 = Tutor(
-        user=user3,
-        description='Chemistry Guru',
-        price=40.0,
-        times=[times1, times3],
-        average_ratings=4.8,
-        classes='Organic Chemistry, Inorganic Chemistry',
-        times_available='Tue-Thu: 10am-6pm',
-        main_languages='English',
-        prefer_in_person=True,
-        cv_link='https://example.com/cv/tutor3.pdf',
-        other_languages='Italian, Spanish',
-        topics = [topic3, topic4]
-    )
-    
-    tutor4 = Tutor(
-        user=user4,
-        description='Biology Expert',
-        price=28.0,
-        average_ratings=4.6,
-        times = [times2, times5],
-        classes='Cell Biology, Genetics',
-        times_available='Mon, Wed, Fri: 8am-12pm',
-        main_languages='English',
-        prefer_in_person=False,
-        cv_link='https://example.com/cv/tutor4.pdf',
-        other_languages='French',
-        topics = [topic1, topic3]
-    )
-    tutor5 = Tutor(
-        user=user5,
-        description='Statistics Whiz',
-        price=32.0,
-        times = [times1, times3, times4],
-        average_ratings=4.7,
-        classes='Intro to Statistics, Advanced Statistics',
-        times_available='Mon-Fri: 1pm-4pm',
-        main_languages='English',
-        prefer_in_person=False,
-        cv_link='https://example.com/cv/tutor5.pdf',
-        other_languages='Spanish, German',
-        topics = [topic3, topic4,topic5]
-    )
-    tutor6 = Tutor(
-        user=user6,
-        description='English Literature Enthusiast',
-        price=25.0,
-        times = [times1, times2, times3, times4, times5],
-        average_ratings=4.3,
-        classes='British Literature, American Literature',
-        times_available='Tue, Thu: 10am-3pm',
-        main_languages='English',
-        prefer_in_person=True,
-        cv_link='https://example.com/cv/tutor6.pdf',
-        other_languages='French, Spanish',
-        topics = [topic5, topic6]
-    )
-    tutor7 = Tutor(
-        user=user7,
-        description='English Literature Enthusiast',
-        price=25.0,
-        times = [times1, times4, times5],
-        average_ratings=4.3,
-        classes='British Literature, American Literature',
-        times_available='Tue, Thu: 10am-3pm',
-        main_languages='English',
-        prefer_in_person=True,
-        cv_link='https://example.com/cv/tutor6.pdf',
-        other_languages='French, Spanish',
-        topics = [topic2, topic7]
-    )
-    tutor8 = Tutor(
-        user=user8,
-         description='Biology Expert',
-        times = [times4, times5],
-        price=28.0,
-        average_ratings=4.6,
-        classes='Cell Biology, Genetics',
-        times_available='Mon, Wed, Fri: 8am-12pm',
-        main_languages='English',
-        prefer_in_person=False,
-        cv_link='https://example.com/cv/tutor4.pdf',
-        other_languages='French',
-        topics = [topic1, topic3,topic5,topic6,topic7]
-    )
-    tutor9 = Tutor(
-        user=user9,
-        description='Chemistry Guru',
-        times = [times1, times3],
-        price=40.0,
-        average_ratings=4.8,
-        classes='Organic Chemistry, Inorganic Chemistry',
-        times_available='Tue-Thu: 10am-6pm',
-        main_languages='English',
-        prefer_in_person=True,
-        cv_link='https://example.com/cv/tutor3.pdf',
-        other_languages='Italian, Spanish',
-        topics=[topic6, topic2, topic7, topic4, topic5]
-    )
-    tutor10 = Tutor(
-        user=user10,
-          description='Experienced Math Tutor',
-        price=30.0,
-        times = [times1, times2, times3,],
-        average_ratings=4.5,
-        classes='Algebra, Geometry, Calculus',
-        times_available='Mon-Fri: 9am-5pm',
-        main_languages='English',
-        prefer_in_person=True,
-        cv_link='https://example.com/cv/tutor1.pdf',
-        other_languages='Spanish, French',
-        topics = [topic7]
-    )
-    session.add(tutor1)
-    session.add(tutor2)
-    session.add(tutor3)
-    session.add(tutor4)
-    session.add(tutor5)
-    session.add(tutor6)
-    session.add(tutor7)
-    session.add(tutor8)
-    session.add(tutor9)
-    session.add(tutor10)
-
-    # Adding Messages
-    message1 = Message(
-        receiver_id=user1.id,
-        message_text='Hello, can we schedule a session for next Monday?',
-        sender_id=user1.id
-    )
-    message2 = Message(
-        receiver_id=user2.id,
-        message_text='Sure, see you then!',
-        sender_id=user2.id
-    )
-    message3 = Message(
-        receiver_id=user1.id,
-        message_text='Heasdasd session for next Monday?',
-        sender_id=user1.id
-    )
-    message4 = Message(
-        receiver_id=user3.id,
-        message_text='Sure, umm!',
-        sender_id=user2.id
-    )
-    message5 = Message(
-        receiver_id=user4.id,
-        message_text='Hello, bruh?',
-        sender_id=user1.id
-    )
-    message6 = Message(
-        receiver_id=user5.id,
-        message_text='stop!',
-        sender_id=user2.id
-    )
-    message7 = Message(
-        receiver_id=user6.id,
-        message_text='nooooo?',
-        sender_id=user2.id
-    )
-    message8 = Message(
-        receiver_id=user7.id,
-        message_text='asdasdasdasd!',
-        sender_id=user2.id
-    )
-    session.add(message1)
-    session.add(message2)
-    session.add(message3)
-    session.add(message4)
-    session.add(message5)
-    session.add(message6)
-    session.add(message7)
-    session.add(message8)
-
-    # Commit and close
-    session.commit()
-    session.close()
+            # Commit the session once all entities are added
+            session.commit()
+            return 'Database populated successfully'
+    except IntegrityError as e:
+        if e and 'Duplicate entry' in str(e):
+            return f'SQL Error: Did you already populate the database?'
+        else:
+            return f'SQL Integrity Error: {e}'
+    except Exception as e:
+        return f'Error: {e}'
