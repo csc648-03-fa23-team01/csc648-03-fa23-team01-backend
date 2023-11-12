@@ -75,6 +75,16 @@ async def createUsers(user:UserCreate, db: Session = Depends(get_db))-> Register
 
     return new_user
 
+@app.get("/tutor")
+async def fetchTutors(id:int, db: Session = Depends(get_db)):
+    tutor = db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics)).filter(Tutor.user_id == id).first()
+    if tutor:
+        print(f"Tutor Found: {tutor.user_id}, {tutor.description}")
+        return tutor
+    else:
+        print("No tutor found with that ID.")
+        return None
+  
 # create a new tutor
 @app.post("/createTutor", response_model=None)
 async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:

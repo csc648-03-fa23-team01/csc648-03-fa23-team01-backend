@@ -26,13 +26,12 @@ tutor_time_association = Table(
 
 class Registered_User(Base):
     __tablename__ = 'Registered_Users'
-
+    id = Column(int, primary_key=True)
     email = Column(String(255), primary_key=True, unique=True)  # Ensure uniqueness
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
     admin_status = Column(Boolean, default=False)
     verified_status = Column(Boolean, default=False)
-
     tutor = relationship("Tutor", uselist=False, back_populates="user")
     messages_sent = relationship("Message", foreign_keys="[Message.sender_id]")
     messages_received = relationship("Message", foreign_keys="[Message.receiver_id]")
