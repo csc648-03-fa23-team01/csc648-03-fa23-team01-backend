@@ -26,7 +26,7 @@ tutor_time_association = Table(
 
 class Registered_User(Base):
     __tablename__ = 'Registered_Users'
-    id = Column(int, primary_key=True)
+    id = Column(Integer, autoincrement=True)
     email = Column(String(255), primary_key=True, unique=True)  # Ensure uniqueness
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)

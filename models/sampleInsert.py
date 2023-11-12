@@ -21,7 +21,7 @@ def populate_db():
         with Session() as session:
             # Add Registered Users
             users = [
-                Registered_User(first_name=f'User{i}', last_name='Doe', email=f'user{i}@example.com')
+                Registered_User(first_name=f'User{i}', last_name='Doe', email=f'user{i}@example.com', id=i)
                 for i in range(1, 21)  # Creating 20 users
             ]
             session.add_all(users)

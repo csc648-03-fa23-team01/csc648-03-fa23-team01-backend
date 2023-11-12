@@ -77,9 +77,11 @@ async def createUsers(user:UserCreate, db: Session = Depends(get_db))-> Register
 
 @app.get("/tutor")
 async def fetchTutors(id:int, db: Session = Depends(get_db)):
-    tutor = db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics)).filter(Tutor.user_id == id).first()
+    tutor = db.query(Tutor).join(Registered_User, Tutor.user_email == Registered_User.email) \
+    .options(joinedload(Tutor.user), joinedload(Tutor.topics), joinedload(Tutor.times)) \
+    .filter(Registered_User.id == id) \
+    .first()
     if tutor:
-        print(f"Tutor Found: {tutor.user_id}, {tutor.description}")
         return tutor
     else:
         print("No tutor found with that ID.")
