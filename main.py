@@ -1,5 +1,6 @@
+
 from fastapi import FastAPI, Depends, HTTPException
-from models.database_model import Base, engine, Tutor, SessionLocal,Topic, tutor_topic_association, Registered_User
+from models.database_model import Base, engine, Tutor, SessionLocal,Topic, tutor_topic_association, Message,Registered_User
 from models.sampleInsert import populate_db
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session, joinedload
@@ -44,10 +45,13 @@ async def gen():
 
 @app.get("/populate")
 async def populate():
-    populate_db()
-    return {"message": "Database populated"}
+    populate_response = populate_db()
+    if populate_response == 'Database populated successfully':
+        return {"message": "Database populated successfully"}
+    else:
+        raise HTTPException(status_code=500, detail=populate_response)
+    
 
-# search tutors by topic, classes, language, or all
 @app.post("/search")
 async def searchTutors(type: str, input: SearchInput, db: Session = Depends(get_db)):
     print(type)
@@ -71,6 +75,18 @@ async def createUsers(user:UserCreate, db: Session = Depends(get_db))-> Register
 
     return new_user
 
+@app.get("/tutor")
+async def fetchTutors(id:int, db: Session = Depends(get_db)):
+    tutor = db.query(Tutor).join(Registered_User, Tutor.user_email == Registered_User.email) \
+    .options(joinedload(Tutor.user), joinedload(Tutor.topics), joinedload(Tutor.times)) \
+    .filter(Registered_User.id == id) \
+    .first()
+    if tutor:
+        return tutor
+    else:
+        print("No tutor found with that ID.")
+        return None
+  
 # create a new tutor
 @app.post("/createTutor", response_model=None)
 async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
@@ -115,3 +131,28 @@ def get_user_with_messages(user_email: str, db: Session = Depends(get_db)):
 @app.get("/getTopics")
 async def getTopics(db: Session = Depends(get_db)):
     return viewTopics(db)
+
+@app.post("/message")
+async def postMessage(sender_id: int, receiver_id: int, text: str, db: Session = Depends(get_db)):
+    # Check if sender and receiver exist
+    sender = db.query(Registered_User).filter(Registered_User.id == sender_id).first()
+    if not sender:
+        raise HTTPException(status_code=404, detail="Sender not found")
+
+    receiver = db.query(Registered_User).filter(Registered_User.id == receiver_id).first()
+    if not receiver:
+        raise HTTPException(status_code=404, detail="Receiver not found")
+
+    # Create a new message instance
+    new_message = Message(
+        receiver_id=receiver_id,
+        message_text=text,
+        sender_id=sender_id
+    )
+
+    # Add the new message to the database session and commit
+    db.add(new_message)
+    db.commit()
+    db.refresh(new_message)
+
+    return new_message
