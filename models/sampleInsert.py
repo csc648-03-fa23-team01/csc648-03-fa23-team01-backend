@@ -21,7 +21,7 @@ def populate_db():
         with Session() as session:
             # Add Registered Users
             users = [
-                Registered_User(first_name=f'User{i}', last_name='Doe', email=f'user{i}@example.com', id=i)
+                Registered_User(first_name=f'User{i}', last_name='Doe', email=f'user{i}@example.com')
                 for i in range(1, 21)  # Creating 20 users
             ]
             session.add_all(users)
@@ -63,9 +63,9 @@ def populate_db():
 
             # Add Messages
             messages = [
-                Message(sender_id=users[i].email, receiver_id=users[i+1].email, 
+                Message(sender_id=i, receiver_id=i+1, 
                         message_text=f'Message content {i}')
-                for i in range(19)  # Creating 20 messages
+                for i in range(1,19)  # Creating 20 messages
             ]
             session.add_all(messages)
 
