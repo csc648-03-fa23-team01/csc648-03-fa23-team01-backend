@@ -90,24 +90,31 @@ async def fetchTutors(id:int, db: Session = Depends(get_db)):
 # create a new tutor
 @app.post("/createTutor", response_model=None)
 async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
-    new_tutor = createTutorHelper(user, db)
-    topics = [topic.name for topic in new_tutor.topics]
-    return {
-        "email": new_tutor.user_email,
-        "topics": topics,
-        "cv_link": new_tutor.cv_link,
-        "description": new_tutor.description,
-        "classes": new_tutor.classes,
-        "price": new_tutor.price,
-        "average_ratings": new_tutor.average_ratings,
-        "times_available": new_tutor.times_available,
-        "main_languages": new_tutor.main_languages,
-        "prefer_in_person": new_tutor.prefer_in_person,
-        "other_languages": new_tutor.other_languages,
-        "profile_picture_link": new_tutor.profile_picture_link,
-        "video_link": new_tutor.video_link
-    }
-    
+    try:
+        new_tutor = createTutorHelper(user, db)
+        topics = [topic.name for topic in new_tutor.topics]
+        return {
+            "email": new_tutor.user_email,
+            "topics": topics,
+            "cv_link": new_tutor.cv_link,
+            "description": new_tutor.description,
+            "classes": new_tutor.classes,
+            "price": new_tutor.price,
+            "average_ratings": new_tutor.average_ratings,
+            "times_available": new_tutor.times_available,
+            "main_languages": new_tutor.main_languages,
+            "prefer_in_person": new_tutor.prefer_in_person,
+            "other_languages": new_tutor.other_languages,
+            "profile_picture_link": new_tutor.profile_picture_link,
+            "video_link": new_tutor.video_link
+        }
+    except IntegrityError as e:
+        if e and 'Duplicate entry' in str(e):
+            raise HTTPException(status_code=400, detail="User already exist in Database")
+        else:
+            raise HTTPException(status_code=400, detail=f'Error: {e}')
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f'Error: {e}')
 
 
 #get user's information
