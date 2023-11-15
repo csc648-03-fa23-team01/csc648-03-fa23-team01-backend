@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session, joinedload
 from fastapi.middleware.cors import CORSMiddleware
 from models.createUser import createUser, createTutorHelper, getUsersByEmail, viewTopics
 from models.createUser import UserCreate, TutorCreate
-from models.search import searchTutorsTopics, searchTutorsClasses, searchTutorsLanguage, searchTutorsAll, SearchInput
+from models.search import searchTutorsTopics, searchTutorsClasses, searchTutorsLanguage, searchTutorsAll, SearchInput, getUserTutors
 
 load_dotenv()
 
@@ -63,6 +63,11 @@ async def searchTutors(type: str, input: SearchInput, db: Session = Depends(get_
         tutors = searchTutorsLanguage(input.text, db)
     else:
         tutors = searchTutorsAll(db)
+    return tutors
+
+@app.get("/userTutors")
+async def getUserTutors(user_id: str, db: Session = Depends(get_db)):
+    tutors = getUserTutors(user_id, db)
     return tutors
 
 # create a new user
