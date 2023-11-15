@@ -1,5 +1,5 @@
 
-from models.database_model import  Tutor,Topic, tutor_topic_association
+from models.database_model import  Tutor,Topic, tutor_topic_association, Message,Registered_User
 from sqlalchemy.orm import Session, joinedload
 from pydantic import BaseModel
 
@@ -17,3 +17,12 @@ def searchTutorsLanguage(text: str, db: Session):
 
 def searchTutorsAll(db: Session):
     return db.query(Tutor).options(joinedload(Tutor.user),joinedload(Tutor.topics),joinedload(Tutor.times)).all()
+
+def getUserTutors(user_id: str, db: Session):
+    query = db.query(Tutor).join(
+        Message, Tutor.user_email == Message.receiver_id
+    ).filter(
+        Message.sender_id == user_id
+    ).distinct()
+
+    return query.all()
