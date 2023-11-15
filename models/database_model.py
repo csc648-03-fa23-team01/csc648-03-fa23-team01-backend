@@ -26,8 +26,8 @@ tutor_time_association = Table(
 
 class Registered_User(Base):
     __tablename__ = 'Registered_Users'
-    id = Column(Integer, autoincrement=True)
-    email = Column(String(255), primary_key=True, unique=True)  # Ensure uniqueness
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    email = Column(String(255), unique=True)  # Ensure uniqueness
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
     admin_status = Column(Boolean, default=False)
@@ -77,10 +77,11 @@ class Message(Base):
     __tablename__ = 'Messages'
 
     id = Column(Integer, primary_key=True)
-    sender_id = Column(String(255), ForeignKey('Registered_Users.email'))
-    receiver_id = Column(String(255), ForeignKey('Registered_Users.email'))
+    sender_id = Column(Integer, ForeignKey('Registered_Users.id'))
+    receiver_id = Column(Integer, ForeignKey('Registered_Users.id'))
     message_text = Column(Text, nullable=False)
     when_sent = Column(DateTime, default=datetime.datetime.utcnow)  # Changed to datetime.now for timezone awareness
 
     sender = relationship("Registered_User", foreign_keys=[sender_id], back_populates="messages_sent")
     receiver = relationship("Registered_User", foreign_keys=[receiver_id], back_populates="messages_received")
+

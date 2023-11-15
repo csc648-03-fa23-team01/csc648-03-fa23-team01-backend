@@ -137,8 +137,10 @@ def get_user_with_messages(user_email: str, db: Session = Depends(get_db)):
 async def getTopics(db: Session = Depends(get_db)):
     return viewTopics(db)
 
+
+
 @app.post("/message")
-async def postMessage(sender_id: int, receiver_id: int, text: str, db: Session = Depends(get_db)):
+async def postMessage(sender_id: str, receiver_id: str, text: str, db: Session = Depends(get_db)):
     # Check if sender and receiver exist
     sender = db.query(Registered_User).filter(Registered_User.id == sender_id).first()
     if not sender:
