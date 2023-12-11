@@ -56,7 +56,8 @@ def createTutorHelper(user:TutorCreate, db: Session):
 
 
 def getUsersByEmail(email: str, db: Session):
-    return db.query(Registered_User).filter(Registered_User.email == email).first()
+    print(db.query(Tutor).join(Registered_User).filter(Registered_User.email == email.replace("%40","@")).first())
+    return db.query(Tutor).join(Registered_User).filter(Registered_User.email == email.replace("%40","@")).first()
 
 def viewTopics(db: Session):
     return db.query(Topic).all()

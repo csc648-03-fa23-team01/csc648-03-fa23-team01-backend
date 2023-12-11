@@ -126,17 +126,24 @@ async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
 @app.post("/user/{user_email}")
 def get_user_with_messages(user_email: str, db: Session = Depends(get_db)):
     
-    user = getUsersByEmail(user_email, db)
-    
-    return {
-        "email": user.email,
-        "firstName": user.first_name,
-        "lastName": user.last_name,
-        "email": user.email,
-        "adminStatus": user.admin_status,
-        "verifiedStatus": user.verified_status,
-        "user_id":user.id
-    }
+    user = db.query(Tutor)\
+        .join(Registered_User)\
+        .filter(Registered_User.email == user_email.replace("%40","@"))\
+        .first()
+    print("\n\n",user)
+    if(user):
+        return {
+            "email": user.email,
+            "firstName": user.first_name,
+            "lastName": user.last_name,
+            "email": user.email,
+            "adminStatus": user.admin_status,
+            "verifiedStatus": user.verified_status,
+            "user_id":user.id,
+            "data":user
+        }
+    else:
+        return None
 
 # get all topics
 @app.get("/getTopics")
@@ -191,23 +198,37 @@ async def get_sent_messages(user_id: str, db: Session = Depends(get_db)):
 
 @app.get("/messages/sent/byemail/{user_email}")
 async def get_sent_messages_by_email(user_email: str, db: Session = Depends(get_db)):
-    # Query the database for the user based on email
+    
     user = db.query(Registered_User).filter(Registered_User.email == user_email).first()
 
-    messages = db.query(Message)\
-    .join(Registered_User, Message.receiver_id == Registered_User.id)\
-    .outerjoin(Tutor, Registered_User.email == Tutor.user_email)\
-    .options(contains_eager(Message.receiver))\
-    .filter(Message.sender_id == user.id).all()    
-    # Check if the user exists
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+    if user:
+        messages = db.query(Message)\
+            .join(Registered_User, Message.sender_id == Registered_User.id)\
+            .outerjoin(Tutor, Registered_User.email == Tutor.user_email)\
+            .options(contains_eager(Message.sender))\
+            .filter(Message.sender_id == user.id)\
+            .all()
+        # Process the messages to include tutor information
+        messages_with_tutor_info = []
+        for message in messages:
+            message_data = {
+                'content': message.message_text,
+                'sender_email': message.sender.email,
+                'sender_name': f"{message.sender.first_name} {message.sender.last_name}",
+                # Add additional message fields as needed
+            }
 
-    # Query the database for messages where the sender_id matches the found user's ID
-
-    # Check if any messages were found
+            # Check if the sender is a tutor and add tutor info
+            if message.receiver.tutor:
+                message_data['tutor_info'] = {
+                    'average_ratings': message.receiver.tutor.average_ratings,
+                    'main_languages': message.receiver.tutor.main_languages,
+                    # Add additional tutor fields as needed
+                }
+    else:
+        messages_with_tutor_info = []
     if messages:
-        # Convert messages to a suitable format for JSON response
+        print(messages)
         response = [{
             "id": message.id,
             "receiver_id": message.receiver_id,
@@ -215,8 +236,7 @@ async def get_sent_messages_by_email(user_email: str, db: Session = Depends(get_
             "when_sent": message.when_sent.isoformat(),
             "receiver_first_name":message.receiver.first_name,
             "receiver_last_name":message.receiver.last_name,
-
-              # Format datetime for JSON
+            "receiver_profile_pic":message.receiver.tutor.profile_picture_link
         } for message in messages]
         return response
     else:
