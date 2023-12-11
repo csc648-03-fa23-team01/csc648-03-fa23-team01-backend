@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from models.database_model import Base, engine, Tutor, SessionLocal,Topic, tutor_topic_association, Message,Registered_User
 from models.sampleInsert import populate_db
 from dotenv import load_dotenv
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session, joinedload, contains_eager
 from fastapi.middleware.cors import CORSMiddleware
 from models.createUser import createUser, createTutorHelper, getUsersByEmail, viewTopics
 from models.createUser import UserCreate, TutorCreate
@@ -127,7 +127,6 @@ async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
 def get_user_with_messages(user_email: str, db: Session = Depends(get_db)):
     
     user = getUsersByEmail(user_email, db)
-    messages = [message.message_text for message in user.messages]
     
     return {
         "email": user.email,
@@ -136,7 +135,7 @@ def get_user_with_messages(user_email: str, db: Session = Depends(get_db)):
         "email": user.email,
         "adminStatus": user.admin_status,
         "verifiedStatus": user.verified_status,
-        "messages": messages
+        "user_id":user.id
     }
 
 # get all topics
@@ -170,3 +169,68 @@ async def postMessage(sender_id: str, receiver_id: str, text: str, db: Session =
     db.refresh(new_message)
 
     return new_message
+
+@app.get("/messages/sent/{user_id}")
+async def get_sent_messages(user_id: str, db: Session = Depends(get_db)):
+    # Query the database for messages where the sender_id matches the given user ID
+    messages = db.query(Message).filter(Message.sender_id == user_id).all()
+
+    # Check if any messages were found
+    if messages:
+        # Convert messages to a suitable format for JSON response (if necessary)
+        response = [{
+            "id": message.id,
+            "receiver_id": message.receiver_id,
+            "message_text": message.message_text,
+            "when_sent": message.when_sent.isoformat()  # format datetime for JSON
+        } for message in messages]
+        return response
+    else:
+        raise HTTPException(status_code=404, detail="No messages sent by this user")
+
+
+@app.get("/messages/sent/byemail/{user_email}")
+async def get_sent_messages_by_email(user_email: str, db: Session = Depends(get_db)):
+    # Query the database for the user based on email
+    user = db.query(Registered_User).filter(Registered_User.email == user_email).first()
+
+    messages = db.query(Message)\
+    .join(Registered_User, Message.receiver_id == Registered_User.id)\
+    .outerjoin(Tutor, Registered_User.email == Tutor.user_email)\
+    .options(contains_eager(Message.receiver))\
+    .filter(Message.sender_id == user.id).all()    
+    # Check if the user exists
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Query the database for messages where the sender_id matches the found user's ID
+
+    # Check if any messages were found
+    if messages:
+        # Convert messages to a suitable format for JSON response
+        response = [{
+            "id": message.id,
+            "receiver_id": message.receiver_id,
+            "message_text": message.message_text,
+            "when_sent": message.when_sent.isoformat(),
+            "receiver_first_name":message.receiver.first_name,
+            "receiver_last_name":message.receiver.last_name,
+
+              # Format datetime for JSON
+        } for message in messages]
+        return response
+    else:
+        return {"message": "No messages sent by this user"}
+    
+@app.get("/getUserByEmail")
+async def get_user_by_email(email: str, db: Session = Depends(get_db)):
+    # Query the database for the user based on the email
+    user = db.query(Registered_User).filter(Registered_User.email == email.replace("%40","@")).first()
+
+    # Check if the user exists
+    if user:
+        # Return the user ID
+        return {"user": user}
+    else:
+        # If no user is found, return an appropriate message
+        raise HTTPException(status_code=404, detail="User not found")

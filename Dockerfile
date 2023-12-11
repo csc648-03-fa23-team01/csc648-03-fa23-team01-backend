@@ -17,4 +17,4 @@ COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
 # Start the application
-CMD ["/wait-for-it.sh", "db:3306", "--timeout=0", "--", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["db:3306", "--timeout=0", "--", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
