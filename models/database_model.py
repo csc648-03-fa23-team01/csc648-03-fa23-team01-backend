@@ -35,6 +35,9 @@ class Registered_User(Base):
     tutor = relationship("Tutor", uselist=False, back_populates="user")
     messages_sent = relationship("Message", foreign_keys="[Message.sender_id]")
     messages_received = relationship("Message", foreign_keys="[Message.receiver_id]")
+    def to_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
+
     
 class Tutor(Base):
     __tablename__ = 'Tutors'

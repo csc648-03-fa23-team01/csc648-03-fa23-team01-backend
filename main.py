@@ -254,8 +254,16 @@ async def get_user_by_email(email: str, db: Session = Depends(get_db)):
 
     # Check if the user exists
     if user:
-        # Return the user ID
-        return {"user": user}
+        user_data = user.to_dict()  # Assuming you have a method to convert the user object to a dictionary
+        
+        # Check if the user is a tutor and fetch tutor data if they are
+        tutor = db.query(Tutor).filter(Tutor.user_email == user.email).first()
+        if tutor:
+            tutor_data = tutor.to_dict()  # Convert the tutor object to a dictionary
+            user_data["tutor"] = tutor_data  # Add tutor data to the user data
+        
+        # Return the user data, with tutor data if applicable
+        return {"user": user_data}
     else:
         # If no user is found, return an appropriate message
         raise HTTPException(status_code=404, detail="User not found")
