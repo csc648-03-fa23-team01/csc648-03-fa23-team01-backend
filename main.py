@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from models.createUser import createUser, createTutorHelper, getUsersByEmail, viewTopics
 from models.createUser import UserCreate, TutorCreate
 from models.search import searchTutorsTopics, searchTutorsClasses, searchTutorsLanguage, searchTutorsAll, SearchInput, getUserTutors
+from typing import Optional  # Import statement added here
 
 load_dotenv()
 
@@ -25,6 +26,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Dependency
 def get_db():
@@ -236,7 +238,10 @@ async def get_sent_messages_by_email(user_email: str, db: Session = Depends(get_
             "when_sent": message.when_sent.isoformat(),
             "receiver_first_name":message.receiver.first_name,
             "receiver_last_name":message.receiver.last_name,
-            "receiver_profile_pic":message.receiver.tutor.profile_picture_link
+            "receiver_profile_pic":message.receiver.tutor.profile_picture_link,
+            "sender_first_name":message.sender.first_name,
+            "sender_last_name":message.sender.last_name,
+
         } for message in messages]
         return response
     else:
@@ -254,3 +259,22 @@ async def get_user_by_email(email: str, db: Session = Depends(get_db)):
     else:
         # If no user is found, return an appropriate message
         raise HTTPException(status_code=404, detail="User not found")
+
+@app.post("/updateUserStatus")
+async def update_user_status(email: str, verified: bool, admin: bool, db: Session = Depends(get_db)):
+    try:
+        # Fetch the user from the database
+        user = db.query(Registered_User).filter(Registered_User.email == email).one()
+
+        # Update the user's status
+        user.verified_status = verified
+        user.admin_status = admin
+
+        # Commit the changes to the database
+        db.commit()
+
+        return {"message": f"User status updated successfully for {email}"}
+    except NoResultFound:
+        raise HTTPException(status_code=404, detail="User not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {e}")
