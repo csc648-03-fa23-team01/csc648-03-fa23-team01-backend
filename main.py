@@ -9,6 +9,10 @@ from models.createUser import createUser, createTutorHelper, getUsersByEmail, vi
 from models.createUser import UserCreate, TutorCreate
 from models.search import searchTutorsTopics, searchTutorsClasses, searchTutorsLanguage, searchTutorsAll, SearchInput, getUserTutors
 from typing import Optional  # Import statement added here
+from fastapi import HTTPException
+from sqlalchemy.orm import Session
+from pydantic import BaseModel, Field
+from models.database_model import Registered_User
 
 load_dotenv()
 
@@ -286,3 +290,31 @@ async def update_user_status(email: str, verified: bool, admin: bool, db: Sessio
         raise HTTPException(status_code=404, detail="User not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {e}")
+
+class UserUpdateRequest(BaseModel):
+    email: Optional[str] = Field(None, example="user@example.com")
+    first_name: Optional[str] = Field(None, example="John")
+    last_name: Optional[str] = Field(None, example="Doe")
+    # Other fields as necessary
+
+@app.patch("/user/{user_id}")
+def update_user(user_id: int, update_data: UserUpdateRequest, db: Session = Depends(get_db)):
+    # Fetch the user from the database
+    user = db.query(Registered_User).filter(Registered_User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Update fields if they are provided in the request
+    if update_data.email is not None:
+        user.email = update_data.email
+    if update_data.first_name is not None:
+        user.first_name = update_data.first_name
+    if update_data.last_name is not None:
+        user.last_name = update_data.last_name
+    # Add other fields updates as necessary
+
+    # Commit the changes to the database
+    db.commit()
+    db.refresh(user)
+
+    return user
