@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from models.database_model import Base, engine, Tutor, SessionLocal,Topic, tutor_topic_association, Message,Registered_User, Times
 from models.sampleInsert import populate_db
 from dotenv import load_dotenv
-from sqlalchemy.orm import Session, joinedload, contains_eager
+from sqlalchemy.orm import Session, joinedload
 from fastapi.middleware.cors import CORSMiddleware
 from models.createUser import createUser, createTutorHelper, getUsersByEmail, viewTopics
 from models.createUser import UserCreate, TutorCreate
@@ -99,35 +99,32 @@ async def fetchTutors(id:int, db: Session = Depends(get_db)):
         print("No tutor found with that ID.")
         return None
   
-@app.post("/createTutor", status_code=status.HTTP_201_CREATED)
-def create_tutor(tutor_data: TutorCreate, db: Session = Depends(get_db)):
-    # Fetch or create the Topic objects from the database
-    topic_objects = db.query(Topic).filter(Topic.name.in_(tutor_data.topics)).all()
-    # For topics not in the database, create new ones
-    new_topics = set(tutor_data.topics) - set([topic.name for topic in topic_objects])
-    topic_objects.extend([Topic(name=topic_name) for topic_name in new_topics])
-
-    # Fetch the Times objects
-    time_objects = db.query(Times).filter(Times.id.in_(tutor_data.times)).all()
-
-    new_tutor = Tutor(
-        user_email=tutor_data.user_email,
-        average_ratings=tutor_data.average_ratings,
-        classes=tutor_data.classes,
-        description=tutor_data.description,
-        price=tutor_data.price,
-        main_languages=tutor_data.main_languages,
-        prefer_in_person=tutor_data.prefer_in_person,
-        cv_link=tutor_data.cv_link,
-        other_languages=tutor_data.other_languages,
-        profile_picture_link=tutor_data.profile_picture_link,
-        video_link=tutor_data.video_link,
-        topics=topic_objects,
-        times=time_objects
-    )
-    db.add(new_tutor)
+# create a new tutor
+@app.post("/createTutor", response_model=None)
+async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
     try:
-        db.commit()
+        new_tutor = createTutorHelper(user, db)
+        topics = [topic.name for topic in new_tutor.topics]
+        return {
+            "email": new_tutor.user_email,
+            "topics": topics,
+            "cv_link": new_tutor.cv_link,
+            "description": new_tutor.description,
+            "classes": new_tutor.classes,
+            "price": new_tutor.price,
+            "average_ratings": new_tutor.average_ratings,
+            "times_available": new_tutor.times_available,
+            "main_languages": new_tutor.main_languages,
+            "prefer_in_person": new_tutor.prefer_in_person,
+            "other_languages": new_tutor.other_languages,
+            "profile_picture_link": new_tutor.profile_picture_link,
+            "video_link": new_tutor.video_link
+        }
+    except IntegrityError as e:
+        if e and 'Duplicate entry' in str(e):
+            raise HTTPException(status_code=400, detail="User already exist in Database")
+        else:
+            raise HTTPException(status_code=400, detail=f'Error: {e}')
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))

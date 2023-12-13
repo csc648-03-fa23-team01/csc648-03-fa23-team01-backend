@@ -73,8 +73,6 @@ class Times(Base):
 
     id = Column(Integer, primary_key=True)
     day = Column(String(255), nullable=False)
-    start_time = Column(String(255), nullable=False)
-    end_time = Column(String(255), nullable=False)
     tutors = relationship('Tutor', secondary=tutor_time_association, back_populates='times')
 
 
