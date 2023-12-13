@@ -2,6 +2,7 @@ from models.database_model import Tutor,Topic, Registered_User
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List
+from typing import Optional
 
 class UserCreate(BaseModel):
     first_name: str
@@ -11,18 +12,19 @@ class UserCreate(BaseModel):
 
 class TutorCreate(BaseModel):
     user_email: str
-    topics: List[str]
-    cv_link: str
-    description: str
+    average_ratings: Optional[float] = 0.0
     classes: str
-    price: float
-    average_ratings: float
-    times_available: str
+    description: str
+    price: Optional[float] = 0.0
     main_languages: str
-    prefer_in_person: bool
-    other_languages: str
-    profile_picture_link: str
-    video_link: str
+    prefer_in_person: Optional[bool] = False
+    cv_link: Optional[str] = None
+    other_languages: Optional[str] = None
+    profile_picture_link: Optional[str] = None
+    video_link: Optional[str] = None
+    topics: List[str] = []
+    times: List[str] = []
+
 
 def createUser(user: UserCreate, db: Session):
     new_user = Registered_User(

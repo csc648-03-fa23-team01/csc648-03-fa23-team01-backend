@@ -57,6 +57,8 @@ class Tutor(Base):
     user = relationship("Registered_User", back_populates="tutor")
     topics = relationship('Topic', secondary=tutor_topic_association, back_populates='tutors')
     times = relationship('Times', secondary=tutor_time_association, back_populates='tutors')
+    def to_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
 
 class Topic(Base):
