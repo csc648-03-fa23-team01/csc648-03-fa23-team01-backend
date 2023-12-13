@@ -4,6 +4,7 @@ from models.database_model import Base, engine, Tutor, SessionLocal,Topic, tutor
 from models.sampleInsert import populate_db
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.exc import IntegrityError
 from fastapi.middleware.cors import CORSMiddleware
 from models.createUser import createUser, createTutorHelper, getUsersByEmail, viewTopics
 from models.createUser import UserCreate, TutorCreate
@@ -106,7 +107,7 @@ async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
             "classes": new_tutor.classes,
             "price": new_tutor.price,
             "average_ratings": new_tutor.average_ratings,
-            "times_available": new_tutor.times_available,
+            "times": new_tutor.times,
             "main_languages": new_tutor.main_languages,
             "prefer_in_person": new_tutor.prefer_in_person,
             "other_languages": new_tutor.other_languages,
@@ -114,6 +115,7 @@ async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
             "video_link": new_tutor.video_link
         }
     except IntegrityError as e:
+        print(f"An error occurred: {str(e)}")
         if e and 'Duplicate entry' in str(e):
             raise HTTPException(status_code=400, detail="User already exist in Database")
         else:

@@ -27,14 +27,14 @@ def populate_db():
             session.add_all(users)
 
             # Add Topics
-            topic_names = ['Math', 'Physics', 'Chemistry', 'Biology', 'English', 
+            topic_names = ['Mathematics', 'Physics', 'Chemistry', 'Biology', 'English Literature', 
                             'History', 'Geography', 'Art', 'Music', 'Computer Science']
             topics = [Topic(name=name) for name in topic_names]
             session.add_all(topics)
 
             # Add Times
             days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-            times = [Times(day=day, start_time=f'9:00', end_time=f'10:00') for day in days]
+            times = [Times(day=day) for day in days]
             session.add_all(times)
             profile_picture_links = [
                 'https://awsgroup1media.s3.us-west-1.amazonaws.com/jake.jpg',
