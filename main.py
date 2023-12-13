@@ -107,7 +107,7 @@ async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
             "classes": new_tutor.classes,
             "price": new_tutor.price,
             "average_ratings": new_tutor.average_ratings,
-            "times": new_tutor.times,
+            "times_available": new_tutor.times_available,
             "main_languages": new_tutor.main_languages,
             "prefer_in_person": new_tutor.prefer_in_person,
             "other_languages": new_tutor.other_languages,
@@ -115,7 +115,6 @@ async def createTutor(user:TutorCreate, db: Session = Depends(get_db))-> Tutor:
             "video_link": new_tutor.video_link
         }
     except IntegrityError as e:
-        print(f"An error occurred: {str(e)}")
         if e and 'Duplicate entry' in str(e):
             raise HTTPException(status_code=400, detail="User already exist in Database")
         else:
